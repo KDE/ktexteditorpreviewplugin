@@ -1,0 +1,20 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "kossebau@kde.org",
+                "Name": "Friedrich W. H. Kossebau"
+            }
+        ],
+        "Description": "Shows text document as Markdown.",
+        "Icon": "text/markdown",
+        "Id": "ktexteditormarkdownpreview",
+        "Name": "Markdown Preview",
+        "MimeTypes": [
+            "text/markdown"
+        ],
+        "ServiceTypes": [
+            "KTextEditor/Preview"
+        ]
+    }
+}

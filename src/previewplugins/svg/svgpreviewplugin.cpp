@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) %{CURRENT_YEAR} by %{AUTHOR} <%{EMAIL}>
+ *   Copyright (C) 2017 by Friedrich W. H. Kossebau <kossebau@kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,33 +17,28 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#include "ktexteditorpreviewplugin.h"
+#include "svgpreviewplugin.h"
 
-#include "ktexteditorpreviewview.h"
+#include "svgpreviewwidget.h"
 
-// KF headers
-#include <KTextEditor/MainWindow>
-
+// KF
 #include <KPluginFactory>
-#include <KLocalizedString>
 
-K_PLUGIN_FACTORY_WITH_JSON(ktexteditorpreviewPluginFactory, "ktexteditorpreview.json", registerPlugin<ktexteditorpreviewPlugin>();)
+K_PLUGIN_FACTORY_WITH_JSON(SvgPreviewPluginFactory, "svgpreviewplugin.json",
+                           registerPlugin<SvgPreviewPlugin>();)
 
 
-ktexteditorpreviewPlugin::ktexteditorpreviewPlugin(QObject* parent, const QVariantList& /*args*/)
-    : KTextEditor::Plugin(parent)
+SvgPreviewPlugin::SvgPreviewPlugin(QObject* parent, const QVariantList& args)
+    : DocumentPreviewPlugin(parent)
 {
+    Q_UNUSED(args);
 }
 
-ktexteditorpreviewPlugin::~ktexteditorpreviewPlugin()
+SvgPreviewPlugin::~SvgPreviewPlugin() = default;
+
+DocumentPreviewWidget* SvgPreviewPlugin::createWidget() const
 {
+    return new SvgPreviewWidget;
 }
 
-QObject* ktexteditorpreviewPlugin::createView(KTextEditor::MainWindow* mainwindow)
-{
-    return new ktexteditorpreviewView(this, mainwindow);
-}
-
-
-// needed for K_PLUGIN_FACTORY_WITH_JSON
-#include <ktexteditorpreviewplugin.moc>
+#include "svgpreviewplugin.moc"

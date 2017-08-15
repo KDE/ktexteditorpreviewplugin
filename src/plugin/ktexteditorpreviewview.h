@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) %{CURRENT_YEAR} by %{AUTHOR} <%{EMAIL}>
+ *   Copyright (C) 2017 by Friedrich W. H. Kossebau <kossebau@kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,24 +17,38 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#include "ktexteditorpreviewview.h"
+#ifndef KTEXTEDITORPREVIEWVIEW_H
+#define KTEXTEDITORPREVIEWVIEW_H
 
-#include "ktexteditorpreviewplugin.h"
+// Qt headers
+#include <QObject>
+#include <QPointer>
 
-// KF headers
-#include <KTextEditor/Document>
-#include <KTextEditor/View>
-#include <KTextEditor/MainWindow>
+class PreviewWidget;
 
-#include <KLocalizedString>
-
-
-ktexteditorpreviewView::ktexteditorpreviewView(ktexteditorpreviewPlugin* plugin, KTextEditor::MainWindow* mainwindow)
-    : QObject(mainwindow)
-{
-    Q_UNUSED(plugin);
+namespace KTextEditor {
+class MainWindow;
+class View;
 }
 
-ktexteditorpreviewView::~ktexteditorpreviewView()
+class KTextEditorPreviewPlugin;
+
+class QWidget;
+
+class KTextEditorPreviewView: public QObject
 {
-}
+    Q_OBJECT
+
+public:
+    KTextEditorPreviewView(KTextEditorPreviewPlugin* plugin, KTextEditor::MainWindow* mainWindow);
+    ~KTextEditorPreviewView() override;
+
+public Q_SLOTS:
+    void handleViewChanged(KTextEditor::View* view);
+
+private:
+    QPointer<QWidget> m_toolView;
+    PreviewWidget* m_previewView;
+};
+
+#endif

@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) %{CURRENT_YEAR} by %{AUTHOR} <%{EMAIL}>
+ *   Copyright (C) 2017 by Friedrich W. H. Kossebau <kossebau@kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,25 +17,35 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#ifndef KTEXTEDITORPREVIEWVIEW_H
-#define KTEXTEDITORPREVIEWVIEW_H
+#ifndef DOCUMENTPROXY_H
+#define DOCUMENTPROXY_H
 
-// Qt headers
 #include <QObject>
 
 namespace KTextEditor {
-class MainWindow;
+class Document;
 }
 
-class ktexteditorpreviewPlugin;
-
-class ktexteditorpreviewView: public QObject
+class DocumentProxy : public QObject
 {
     Q_OBJECT
 
+    // TODO: see if this could be done without a member which holds a copy
+    Q_PROPERTY(QString text MEMBER m_text NOTIFY textChanged FINAL)
+
 public:
-    ktexteditorpreviewView(ktexteditorpreviewPlugin* plugin, KTextEditor::MainWindow *view);
-    ~ktexteditorpreviewView() override;
+    explicit DocumentProxy(QObject *parent) : QObject(parent) {}
+
+    void setDocument(const KTextEditor::Document* document);
+
+    void handleTextChanged();
+
+Q_SIGNALS:
+    void textChanged(const QString& text);
+
+private:
+    const KTextEditor::Document* m_document = nullptr;
+    QString m_text;
 };
 
-#endif // KTEXTEDITORPREVIEWVIEW_H
+#endif

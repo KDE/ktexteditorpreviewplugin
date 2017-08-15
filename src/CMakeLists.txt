@@ -1,15 +1,5 @@
-add_definitions(-DTRANSLATION_DOMAIN=\"ktexteditorpreview\")
+add_subdirectory(lib)
 
-set(ktexteditorpreview_SRCS
-    ktexteditorpreviewplugin.cpp
-    ktexteditorpreviewview.cpp
-)
+add_subdirectory(previewplugins)
 
-add_library(ktexteditorpreview MODULE ${ktexteditorpreview_SRCS})
-
-target_link_libraries(ktexteditorpreview
-    KF5::TextEditor
-    KF5::I18n
-)
-
-install(TARGETS ktexteditorpreview DESTINATION ${KDE_INSTALL_PLUGINDIR}/ktexteditor)
+add_subdirectory(plugin)

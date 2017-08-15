@@ -1,38 +1,12 @@
-# Readme file
+# KTextEditor Document Preview Plugin
 
-## Introduction
+This repository contains the KTextEditor Document Preview Plugin, a plugin
+for [Kate](https://www.kate-editor.org/) & [KDevelop](https://www.kdevelop.org/) or other 
+KTextEditor using programs.
 
-This is a simple Kate plugin right now. Make it do something :)
+The plugin is extenable by plugins again, each sub-plugin providing support for a certain
+format/mimetype.
 
+Work-In-Progress, API of preview plugin API and UI still up for discussion.
 
-## Installation instructions
-
-Define some testing install dir:
-
-    export MYKATEPLUGINPATH=$HOME/mykateplugins 
-
-Build and install:
-
-    mkdir build
-    cd build
-    cmake .. -DKDE_INSTALL_PLUGINDIR=$MYKATEPLUGINPATH
-    make
-    make install
-
-
-## Check the plugin
-
-Start Kate on the commandline, with adapted QT_PLUGIN_PATH:
-
-    export QT_PLUGIN_PATH=$MYKATEPLUGINPATH:$QT_PLUGIN_PATH
-    kate --startanon
-
-Go to Settings / Configurate Kate / Application / Plugins
-Search and enable your plugin
-
-
-## Help
-
-https://api.kde.org/frameworks/ktexteditor/html/classKTextEditor_1_1Plugin.html#plugin_intro
-
-For help or more information, contact the Kate team
+Feedback welcome, kossebau AT kde org or catch me on freenode irc in #kdevelop.

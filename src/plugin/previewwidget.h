@@ -1,5 +1,5 @@
 /*
- *   Copyright (C) %{CURRENT_YEAR} by %{AUTHOR} <%{EMAIL}>
+ *   Copyright (C) 2017 by Friedrich W. H. Kossebau <kossebau@kde.org>
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,26 +17,41 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#ifndef KTEXTEDITORPREVIEWPLUGIN_H
-#define KTEXTEDITORPREVIEWPLUGIN_H
+#ifndef PREVIEWWIDGET_H
+#define PREVIEWWIDGET_H
 
-// KF headers
-#include <KTextEditor/Plugin>
+// Qt headers
+#include <QWidget>
 
-class ktexteditorpreviewPlugin : public KTextEditor::Plugin
+class KTextEditorPreviewPlugin;
+
+class DocumentPreviewPlugin;
+class DocumentPreviewWidget;
+
+namespace KTextEditor {
+class View;
+}
+class KToggleAction;
+class QStackedWidget;
+
+class PreviewWidget: public QWidget
 {
     Q_OBJECT
 
 public:
-    /**
-     * Default constructor, with arguments as expected by KPluginFactory
-     */
-    ktexteditorpreviewPlugin(QObject* parent, const QVariantList& args);
+    PreviewWidget(KTextEditorPreviewPlugin* core, QWidget* parent);
+    ~PreviewWidget() override;
 
-    ~ktexteditorpreviewPlugin() override;
+public:
+    void setTextEditorView(KTextEditor::View* view);
 
-public: // KTextEditor::Plugin API
-    QObject* createView(KTextEditor::MainWindow* mainWindow) override;
+private:
+    QStackedWidget* m_stackedWidget;
+    KToggleAction* m_lockAction;
+
+    KTextEditorPreviewPlugin* const m_core;
+    DocumentPreviewPlugin* m_currentPlugin = nullptr;
+    DocumentPreviewWidget* m_previewWidget = nullptr;
 };
 
-#endif // KTEXTEDITORPREVIEWPLUGIN_H
+#endif
