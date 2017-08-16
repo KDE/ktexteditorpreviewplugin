@@ -25,6 +25,8 @@
 class MarkdownPreviewPage;
 class DocumentProxy;
 class QWebEngineView;
+class QWebView;
+
 
 class MarkdownPreviewWidget : public DocumentPreviewWidget
 {
@@ -38,11 +40,20 @@ public:
     void setDocument(const KTextEditor::Document* document) override;
 
 private:
+#ifdef USE_QTWEBKIT
+    void openUrlExternally(const QUrl& url);
+#endif
+
     void updatePreview();
 
 private:
+#ifdef USE_QTWEBKIT
+    QWebView* m_widget = nullptr;
+#else
     QWebEngineView* m_widget = nullptr;
     MarkdownPreviewPage* m_previewPage = nullptr;
+#endif
+
     DocumentProxy* m_documentProxy = nullptr;
 };
 

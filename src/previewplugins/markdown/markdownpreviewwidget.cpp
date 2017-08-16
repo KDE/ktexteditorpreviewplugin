@@ -19,27 +19,50 @@
 
 #include "markdownpreviewwidget.h"
 
+#ifndef USE_QTWEBKIT
 #include "markdownpreviewpage.h"
+#endif
 #include "documentproxy.h"
 
 #include <KTextEditor/Document>
 
+#ifdef USE_QTWEBKIT
+#include <QDesktopServices>
+#include <QWebView>
+#include <QWebPage>
+#include <QWebFrame>
+#else
 #include <QWebEngineView>
 #include <QWebChannel>
-
+#endif
 
 MarkdownPreviewWidget::MarkdownPreviewWidget(QObject* parent)
     : DocumentPreviewWidget(parent)
+#ifdef USE_QTWEBKIT
+    , m_widget(new QWebView)
+#else
     , m_widget(new QWebEngineView)
     , m_previewPage(new MarkdownPreviewPage(this))
+#endif
     , m_documentProxy(new DocumentProxy(this))
 {
+#ifdef USE_QTWEBKIT
+    auto page = m_widget->page();
+    page->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(m_widget, &QWebView::linkClicked, this, &MarkdownPreviewWidget::openUrlExternally);
+#else
     m_widget->setPage(m_previewPage);
+#endif
     m_widget->setContextMenuPolicy(Qt::NoContextMenu);
 
+#ifdef USE_QTWEBKIT
+    auto frame = page->mainFrame();
+    frame->addToJavaScriptWindowObject("sourceTextObject", m_documentProxy);
+#else
     QWebChannel* channel = new QWebChannel(this);
     channel->registerObject(QStringLiteral("content"), m_documentProxy);
     m_previewPage->setWebChannel(channel);
+#endif
 
     m_widget->setUrl(QUrl("qrc:/ktexteditorpreview/markdown/index.html"));
 }
@@ -58,3 +81,10 @@ void MarkdownPreviewWidget::setDocument(const KTextEditor::Document* document)
 {
     m_documentProxy->setDocument(document);
 }
+
+#ifdef USE_QTWEBKIT
+void MarkdownPreviewWidget::openUrlExternally(const QUrl& url)
+{
+    QDesktopServices::openUrl(url);
+}
+#endif
