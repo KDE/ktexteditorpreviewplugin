@@ -13,6 +13,10 @@ endif()
 add_subdirectory(svg)
 
 find_package(Qt5WebEngineWidgets CONFIG QUIET)
+set_package_properties(Qt5WebEngineWidgets PROPERTIES
+    PURPOSE "Required for markdown preview"
+    TYPE RECOMMENDED
+)
 if(Qt5WebEngineWidgets_FOUND)
     add_subdirectory(markdown)
 endif()
