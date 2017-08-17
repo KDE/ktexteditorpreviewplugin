@@ -24,7 +24,7 @@
 
 class QSvgWidget;
 
-class SvgPreviewWidget : public DocumentPreviewWidget
+class SvgPreviewWidget : public KTextEditorPreview::DocumentPreviewWidget
 {
     Q_OBJECT
 

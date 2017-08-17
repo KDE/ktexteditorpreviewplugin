@@ -22,7 +22,7 @@
 
 #include <documentpreviewplugin.h>
 
-class SvgPreviewPlugin : public DocumentPreviewPlugin
+class SvgPreviewPlugin : public KTextEditorPreview::DocumentPreviewPlugin
 {
     Q_OBJECT
 
@@ -30,7 +30,7 @@ public:
     SvgPreviewPlugin(QObject* parent, const QVariantList& args);
     ~SvgPreviewPlugin() override;
 
-    DocumentPreviewWidget* createWidget() const override;
+    KTextEditorPreview::DocumentPreviewWidget* createWidget() const override;
 
 private:
 };

@@ -38,6 +38,7 @@
 #include <QStackedWidget>
 #include <QDebug>
 
+using namespace KTextEditorPreview;
 
 PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, QWidget* parent)
     : QWidget(parent)

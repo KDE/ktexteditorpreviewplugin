@@ -37,7 +37,7 @@
 #endif
 
 MarkdownPreviewWidget::MarkdownPreviewWidget(QObject* parent)
-    : DocumentPreviewWidget(parent)
+    : KTextEditorPreview::DocumentPreviewWidget(parent)
 #ifdef USE_QTWEBKIT
     , m_widget(new QWebView)
 #else

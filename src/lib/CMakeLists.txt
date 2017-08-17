@@ -25,6 +25,25 @@ set_target_properties(KTextEditorPreview PROPERTIES
 )
 
 install(TARGETS KTextEditorPreview EXPORT KTextEditorPreviewTargets ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
-install(FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/ktexteditorpreview_export.h
-    DESTINATION ${KDE_INSTALL_INCLUDEDIR}/KTextEditorPreview COMPONENT Devel)
+
+ecm_generate_headers(ktexteditorpreview_CC_PUBLIC_HDRS
+    HEADER_NAMES
+        DocumentPreviewWidget
+        DocumentPreviewPlugin
+    PREFIX KTextEditorPreview
+    REQUIRED_HEADERS ktexteditorpreview_PUBLIC_HDRS
+)
+
+install(
+    FILES
+        ${ktexteditorpreview_PUBLIC_HDRS}
+        ${CMAKE_CURRENT_BINARY_DIR}/ktexteditorpreview_export.h
+    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KTextEditorPreview/ktexteditorpreview
+    COMPONENT Devel
+)
+
+install(
+    FILES ${ktexteditorpreview_CC_PUBLIC_HDRS}
+    DESTINATION ${KDE_INSTALL_INCLUDEDIR_KF5}/KTextEditorPreview/KTextEditorPreview
+    COMPONENT Devel
+)

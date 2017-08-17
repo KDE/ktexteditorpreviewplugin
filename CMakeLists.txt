@@ -10,6 +10,7 @@ include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(GenerateExportHeader)
+include(ECMGenerateHeaders)
 include(FeatureSummary)
 
 set(QT_MIN_VERSION "5.6.0")

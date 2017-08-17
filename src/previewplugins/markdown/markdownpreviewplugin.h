@@ -22,7 +22,7 @@
 
 #include <documentpreviewplugin.h>
 
-class MarkdownPreviewPlugin : public DocumentPreviewPlugin
+class MarkdownPreviewPlugin : public KTextEditorPreview::DocumentPreviewPlugin
 {
     Q_OBJECT
 
@@ -30,7 +30,7 @@ public:
     MarkdownPreviewPlugin(QObject* parent, const QVariantList& args);
     ~MarkdownPreviewPlugin() override;
 
-    DocumentPreviewWidget* createWidget() const override;
+    KTextEditorPreview::DocumentPreviewWidget* createWidget() const override;
 
 private:
 };

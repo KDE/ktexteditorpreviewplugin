@@ -35,6 +35,7 @@
 #include <QMimeDatabase>
 #include <QDebug>
 
+using namespace KTextEditorPreview;
 
 K_PLUGIN_FACTORY_WITH_JSON(KTextEditorPreviewPluginFactory, "ktexteditorpreview.json", registerPlugin<KTextEditorPreviewPlugin>();)
 

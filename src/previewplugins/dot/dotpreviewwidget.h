@@ -28,7 +28,7 @@ namespace KParts {
 class ReadOnlyPart;
 }
 
-class DotPreviewWidget : public DocumentPreviewWidget
+class DotPreviewWidget : public KTextEditorPreview::DocumentPreviewWidget
 {
     Q_OBJECT
 

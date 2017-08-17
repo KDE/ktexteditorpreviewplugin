@@ -24,6 +24,9 @@
 
 #include "ktexteditorpreview_export.h"
 
+namespace KTextEditorPreview
+{
+
 class DocumentPreviewWidget;
 
 class KTEXTEDITORPREVIEW_EXPORT DocumentPreviewPlugin : public QObject
@@ -36,5 +39,7 @@ public:
 
     virtual DocumentPreviewWidget* createWidget() const = 0;
 };
+
+}
 
 #endif

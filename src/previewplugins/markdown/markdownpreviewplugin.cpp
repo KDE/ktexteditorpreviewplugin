@@ -28,14 +28,14 @@ K_PLUGIN_FACTORY_WITH_JSON(MarkdownPreviewPluginFactory, "markdownpreviewplugin.
 
 
 MarkdownPreviewPlugin::MarkdownPreviewPlugin(QObject* parent, const QVariantList& args)
-    : DocumentPreviewPlugin(parent)
+    : KTextEditorPreview::DocumentPreviewPlugin(parent)
 {
     Q_UNUSED(args);
 }
 
 MarkdownPreviewPlugin::~MarkdownPreviewPlugin() = default;
 
-DocumentPreviewWidget* MarkdownPreviewPlugin::createWidget() const
+KTextEditorPreview::DocumentPreviewWidget* MarkdownPreviewPlugin::createWidget() const
 {
     return new MarkdownPreviewWidget;
 }

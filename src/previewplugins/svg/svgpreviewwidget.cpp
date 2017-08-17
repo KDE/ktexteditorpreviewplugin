@@ -24,7 +24,7 @@
 #include <QSvgWidget>
 
 SvgPreviewWidget::SvgPreviewWidget(QObject* parent)
-    : DocumentPreviewWidget(parent)
+    : KTextEditorPreview::DocumentPreviewWidget(parent)
     , m_widget(new QSvgWidget)
 {
 }

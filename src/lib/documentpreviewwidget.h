@@ -28,6 +28,9 @@ namespace KTextEditor {
 class Document;
 }
 
+namespace KTextEditorPreview
+{
+
 class KTEXTEDITORPREVIEW_EXPORT DocumentPreviewWidget : public QObject
 {
     Q_OBJECT
@@ -43,5 +46,7 @@ public:
 
     virtual void setDocument(const KTextEditor::Document* document) = 0;
 };
+
+}
 
 #endif

@@ -28,14 +28,14 @@ K_PLUGIN_FACTORY_WITH_JSON(DotPreviewPluginFactory, "dotpreviewplugin.json", reg
 
 
 DotPreviewPlugin::DotPreviewPlugin(QObject* parent, const QVariantList& args)
-    : DocumentPreviewPlugin(parent)
+    : KTextEditorPreview::DocumentPreviewPlugin(parent)
 {
     Q_UNUSED(args);
 }
 
 DotPreviewPlugin::~DotPreviewPlugin() = default;
 
-DocumentPreviewWidget* DotPreviewPlugin::createWidget() const
+KTextEditorPreview::DocumentPreviewWidget* DotPreviewPlugin::createWidget() const
 {
     return new DotPreviewWidget;
 }

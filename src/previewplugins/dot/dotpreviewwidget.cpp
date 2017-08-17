@@ -30,7 +30,7 @@
 #include <QDebug>
 
 DotPreviewWidget::DotPreviewWidget(QObject* parent)
-    : DocumentPreviewWidget(parent)
+    : KTextEditorPreview::DocumentPreviewWidget(parent)
 {
     static KPluginFactory* factory = KPluginLoader(QStringLiteral("kgraphviewerpart")).factory();
     if (factory) {

@@ -25,8 +25,10 @@
 
 class KTextEditorPreviewPlugin;
 
+namespace KTextEditorPreview {
 class DocumentPreviewPlugin;
 class DocumentPreviewWidget;
+}
 
 namespace KTextEditor {
 class View;
@@ -50,8 +52,8 @@ private:
     KToggleAction* m_lockAction;
 
     KTextEditorPreviewPlugin* const m_core;
-    DocumentPreviewPlugin* m_currentPlugin = nullptr;
-    DocumentPreviewWidget* m_previewWidget = nullptr;
+    KTextEditorPreview::DocumentPreviewPlugin* m_currentPlugin = nullptr;
+    KTextEditorPreview::DocumentPreviewWidget* m_previewWidget = nullptr;
 };
 
 #endif

@@ -28,7 +28,7 @@ class QWebEngineView;
 class QWebView;
 
 
-class MarkdownPreviewWidget : public DocumentPreviewWidget
+class MarkdownPreviewWidget : public KTextEditorPreview::DocumentPreviewWidget
 {
     Q_OBJECT
 

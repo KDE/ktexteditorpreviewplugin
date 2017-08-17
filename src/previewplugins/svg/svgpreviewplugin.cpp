@@ -29,14 +29,14 @@ K_PLUGIN_FACTORY_WITH_JSON(SvgPreviewPluginFactory, "svgpreviewplugin.json",
 
 
 SvgPreviewPlugin::SvgPreviewPlugin(QObject* parent, const QVariantList& args)
-    : DocumentPreviewPlugin(parent)
+    : KTextEditorPreview::DocumentPreviewPlugin(parent)
 {
     Q_UNUSED(args);
 }
 
 SvgPreviewPlugin::~SvgPreviewPlugin() = default;
 
-DocumentPreviewWidget* SvgPreviewPlugin::createWidget() const
+KTextEditorPreview::DocumentPreviewWidget* SvgPreviewPlugin::createWidget() const
 {
     return new SvgPreviewWidget;
 }

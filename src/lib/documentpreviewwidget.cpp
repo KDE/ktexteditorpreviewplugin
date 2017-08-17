@@ -19,6 +19,8 @@
 
 #include "documentpreviewwidget.h"
 
+using namespace KTextEditorPreview;
+
 DocumentPreviewWidget::DocumentPreviewWidget(QObject* parent)
     : QObject(parent)
 {
