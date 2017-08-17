@@ -30,13 +30,14 @@ class DocumentProxy : public QObject
 {
     Q_OBJECT
 
-    // TODO: see if this could be done without a member which holds a copy
-    Q_PROPERTY(QString text MEMBER m_text NOTIFY textChanged FINAL)
+    Q_PROPERTY(QString text READ text NOTIFY textChanged FINAL)
 
 public:
     explicit DocumentProxy(QObject *parent) : QObject(parent) {}
 
     void setDocument(const KTextEditor::Document* document);
+
+    QString text() const;
 
     void handleTextChanged();
 
@@ -45,7 +46,6 @@ Q_SIGNALS:
 
 private:
     const KTextEditor::Document* m_document = nullptr;
-    QString m_text;
 };
 
 #endif

@@ -35,17 +35,18 @@ void DocumentProxy::setDocument(const KTextEditor::Document* document)
     m_document = document;
 
     if (m_document) {
-        m_text = m_document->text();
         connect(m_document, &KTextEditor::Document::textChanged, this, &DocumentProxy::handleTextChanged);
-    } else {
-        m_text.clear();
     }
 
-    emit textChanged(m_text);
+    handleTextChanged();
 }
 
 void DocumentProxy::handleTextChanged()
 {
-    m_text = m_document->text();
-    emit textChanged(m_text);
+    emit textChanged(m_document->text());
+}
+
+QString DocumentProxy::text() const
+{
+    return m_document ? m_document->text() : QString();
 }
