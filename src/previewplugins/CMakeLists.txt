@@ -38,3 +38,5 @@ endif()
 if(Qt5WebEngineWidgets_FOUND OR Qt5WebKitWidgets_FOUND AND Qt5WebChannel_FOUND)
     add_subdirectory(markdown)
 endif()
+
+add_subdirectory(qtui)
