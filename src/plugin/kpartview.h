@@ -17,22 +17,50 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#ifndef QTUIPREVIEWPLUGIN_H
-#define QTUIPREVIEWPLUGIN_H
+#ifndef KPARTVIEW_H
+#define KPARTVIEW_H
 
-#include <documentpreviewplugin.h>
+#include <KService>
 
-class QtUiPreviewPlugin : public KTextEditorPreview::DocumentPreviewPlugin
+#include <QObject>
+#include <QTimer>
+
+namespace KTextEditor {
+class Document;
+}
+namespace KParts {
+class ReadOnlyPart;
+}
+class QLabel;
+class QTemporaryFile;
+
+class KPartView : public QObject
 {
     Q_OBJECT
 
 public:
-    QtUiPreviewPlugin(QObject* parent, const QVariantList& args);
-    ~QtUiPreviewPlugin() override;
+    KPartView(const KService::Ptr& service, QObject* parent);
+    ~KPartView() override;
 
-    KTextEditorPreview::DocumentPreviewWidget* createWidget() const override;
+    /**
+     * Returns the widget object, Ownership is not transferred.
+     */
+    QWidget* widget() const;
+
+    void setDocument(KTextEditor::Document* document);
 
 private:
+    void triggerUpdatePreview();
+    void updatePreview();
+    void handleOpenUrlRequest(const QUrl& url);
+
+private:
+    QLabel* m_errorLabel = nullptr;
+    KParts::ReadOnlyPart* m_part = nullptr;
+    KTextEditor::Document* m_document = nullptr;
+
+    QTimer m_updateTimer;
+    QTemporaryFile* m_helperFile = nullptr;
 };
 
 #endif

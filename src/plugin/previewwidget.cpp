@@ -20,28 +20,28 @@
 #include "previewwidget.h"
 
 #include "ktexteditorpreviewplugin.h"
+#include "kpartview.h"
 
-#include <documentpreviewwidget.h>
-#include <documentpreviewplugin.h>
-
+// KF
 #include <KTextEditor/View>
 #include <KTextEditor/Document>
+
+#include <KService>
+#include <KMimeTypeTrader>
 
 #include <KLocalizedString>
 #include <KToggleAction>
 #include <KGuiItem>
 
+// Qt
 #include <QLabel>
 #include <QIcon>
 #include <QAction>
-#include <QVBoxLayout>
-#include <QStackedWidget>
 #include <QDebug>
 
-using namespace KTextEditorPreview;
 
 PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, QWidget* parent)
-    : QWidget(parent)
+    : QStackedWidget(parent)
     , m_core(core)
 {
     m_lockAction = new KToggleAction(QIcon::fromTheme(QStringLiteral("object-unlocked")), i18n("Lock Current Document"), this);
@@ -51,49 +51,52 @@ PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, QWidget* parent)
 //     connect(m_editRepoAction, &QAction::triggered, this, &SnippetView::slotEditRepo);
     addAction(m_lockAction);
 
-    auto mainLayout = new QVBoxLayout;
-    mainLayout->setMargin(0);
-    setLayout(mainLayout);
-
-    m_stackedWidget = new QStackedWidget(this);
-    mainLayout->addWidget(m_stackedWidget);
-
     auto label = new QLabel(i18n("No preview available."), this);
     label->setAlignment(Qt::AlignHCenter);
-    m_stackedWidget->addWidget(label);
+    addWidget(label);
 }
 
-PreviewWidget::~PreviewWidget()
-{
-    delete m_previewWidget;
-}
+PreviewWidget::~PreviewWidget() = default;
 
 void PreviewWidget::setTextEditorView(KTextEditor::View* view)
 {
     if (m_lockAction->isChecked()) 
         return;
 
-    DocumentPreviewPlugin* plugin = view ? m_core->pluginForMimeType(view->document()->mimeType()) : nullptr;
-
-    // change of preview type?
-    if (plugin != m_currentPlugin) {
-        if (m_previewWidget) {
-            m_stackedWidget->removeWidget(m_previewWidget->widget());
-            delete m_previewWidget;
-        }
-
-        m_currentPlugin = plugin;
-
-        if (m_currentPlugin) {
-            m_previewWidget = m_currentPlugin->createWidget();
-            int index = m_stackedWidget->addWidget(m_previewWidget->widget());
-            m_stackedWidget->setCurrentIndex(index);
-        } else {
-            m_previewWidget = nullptr;
+    KService::Ptr service;
+    if (view) {
+        service = KMimeTypeTrader::self()->preferredService(view->document()->mimeType(),
+                                                            QStringLiteral("KParts/ReadOnlyPart"));
+        // no interest in kparts which also just display the text (like katepart itself)
+        // TODO: what about parts which also support importing plain text and turning into richer format
+        // and thus have it in their mimetypes list?
+        if (service && service->mimeTypes().contains(QStringLiteral("text/plain"))) {
+            service.reset();
         }
     }
 
-    if (m_previewWidget) {
-        m_previewWidget->setDocument(view ? view->document() : nullptr);
+    // change of preview type?
+    // TODO: find a better id than library?
+    const QString serviceId = service ? service->library() : QString();
+
+    if (serviceId != m_currentServiceId) {
+        if (m_partView) {
+            removeWidget(m_partView->widget());
+            delete m_partView;
+        }
+
+        m_currentServiceId = serviceId;
+
+        if (service) {
+            m_partView = new KPartView(service, this);
+            int index = addWidget(m_partView->widget());
+            setCurrentIndex(index);
+        } else {
+            m_partView = nullptr;
+        }
+    }
+
+    if (m_partView) {
+        m_partView->setDocument(view ? view->document() : nullptr);
     }
 }

@@ -23,12 +23,7 @@
 // KF
 #include <KTextEditor/Plugin>
 
-// Qt
-#include <QHash>
-
-namespace KTextEditorPreview {
-class DocumentPreviewPlugin;
-}
+class KPartPreviewer;
 
 class KTextEditorPreviewPlugin : public KTextEditor::Plugin
 {
@@ -42,13 +37,8 @@ public:
 
     ~KTextEditorPreviewPlugin() override;
 
-    KTextEditorPreview::DocumentPreviewPlugin* pluginForMimeType(const QString& mimeType);
-
 public: // KTextEditor::Plugin API
     QObject* createView(KTextEditor::MainWindow* mainWindow) override;
-
-private:
-    QHash<QString,KTextEditorPreview::DocumentPreviewPlugin*> m_pluginsByMimeType;
 };
 
 #endif

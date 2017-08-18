@@ -20,23 +20,18 @@
 #ifndef PREVIEWWIDGET_H
 #define PREVIEWWIDGET_H
 
-// Qt headers
-#include <QWidget>
+// Qt
+#include <QStackedWidget>
 
 class KTextEditorPreviewPlugin;
-
-namespace KTextEditorPreview {
-class DocumentPreviewPlugin;
-class DocumentPreviewWidget;
-}
+class KPartView;
 
 namespace KTextEditor {
 class View;
 }
 class KToggleAction;
-class QStackedWidget;
 
-class PreviewWidget: public QWidget
+class PreviewWidget: public QStackedWidget
 {
     Q_OBJECT
 
@@ -48,12 +43,12 @@ public:
     void setTextEditorView(KTextEditor::View* view);
 
 private:
-    QStackedWidget* m_stackedWidget;
     KToggleAction* m_lockAction;
 
     KTextEditorPreviewPlugin* const m_core;
-    KTextEditorPreview::DocumentPreviewPlugin* m_currentPlugin = nullptr;
-    KTextEditorPreview::DocumentPreviewWidget* m_previewWidget = nullptr;
+
+    QString m_currentServiceId;
+    KPartView* m_partView = nullptr;
 };
 
 #endif

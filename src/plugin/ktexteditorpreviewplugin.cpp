@@ -21,21 +21,13 @@
 
 #include "ktexteditorpreviewview.h"
 
-#include <documentpreviewplugin.h>
-
 // KF
 #include <KTextEditor/MainWindow>
-
-#include <KPluginLoader>
-#include <KPluginMetaData>
 #include <KPluginFactory>
-#include <KLocalizedString>
 
 // Qt
-#include <QMimeDatabase>
 #include <QDebug>
 
-using namespace KTextEditorPreview;
 
 K_PLUGIN_FACTORY_WITH_JSON(KTextEditorPreviewPluginFactory, "ktexteditorpreview.json", registerPlugin<KTextEditorPreviewPlugin>();)
 
@@ -45,54 +37,7 @@ KTextEditorPreviewPlugin::KTextEditorPreviewPlugin(QObject* parent, const QVaria
 {
 }
 
-KTextEditorPreviewPlugin::~KTextEditorPreviewPlugin()
-{
-}
-
-DocumentPreviewPlugin* KTextEditorPreviewPlugin::pluginForMimeType(const QString& mimeType)
-{
-    if (m_pluginsByMimeType.isEmpty()) {
-        const auto pluginsMetadata = KPluginLoader::findPlugins(QStringLiteral("ktexteditorpreview"));
-        for (const auto& metadata : pluginsMetadata) {
-            KPluginLoader loader(metadata.fileName());
-            auto factory = loader.factory();
-            if (!factory) {
-                qWarning() << "Can't load plugin" << metadata.pluginId()
-                        << "because a factory to load the plugin could not be obtained:" << loader.errorString();
-                return nullptr;
-            }
-
-            // now create it
-            auto previewPlugin = factory->create<DocumentPreviewPlugin>(this);
-            if (!previewPlugin) {
-                qWarning() << "Could not instantiate plugin" << metadata.fileName() << "\": not a DocumentPreviewPlugin class.";
-                continue;
-            }
-
-            for (auto mimetype : metadata.mimeTypes()) {
-                m_pluginsByMimeType.insert(mimetype, previewPlugin);
-            }
-        }
-    }
-
-    DocumentPreviewPlugin* plugin = nullptr;
-
-    const auto documentMimetype = QMimeDatabase().mimeTypeForName(mimeType);
-
-    // TODO: needs check if there is a more specialized preview plugin (e.g. should svg > xml)
-    if (documentMimetype.isValid()) {
-        auto it = m_pluginsByMimeType.constBegin();
-        const auto end = m_pluginsByMimeType.constEnd();
-        for (; it != end; ++it) {
-            if (documentMimetype.inherits(it.key())) {
-                plugin = it.value();
-                break;
-            }
-        }
-    }
-
-    return plugin;
-}
+KTextEditorPreviewPlugin::~KTextEditorPreviewPlugin() = default;
 
 QObject* KTextEditorPreviewPlugin::createView(KTextEditor::MainWindow* mainwindow)
 {
