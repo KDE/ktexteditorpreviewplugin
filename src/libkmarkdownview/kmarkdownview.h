@@ -17,32 +17,50 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#ifndef MARKDOWNPREVIEWWIDGET_H
-#define MARKDOWNPREVIEWWIDGET_H
+#ifndef KMARKDOWNVIEW_H
+#define KMARKDOWNVIEW_H
 
-#include <documentpreviewwidget.h>
+#include <kmarkdownview_export.h>
+#include <kmarkdownview-config.h>
 
-class MarkdownSourceDocument;
-class KMarkdownView;
+// Qt headers
+#ifdef USE_QTWEBKIT
+#include <QWebView>
+#else
+#include <QWebEngineView>
+#endif
 
-class MarkdownPreviewWidget : public KTextEditorPreview::DocumentPreviewWidget
+class KMarkdownViewPage;
+class KAbstractMarkdownSourceDocument;
+class QUrl;
+
+class KMARKDOWNVIEW_EXPORT KMarkdownView : public
+#ifdef USE_QTWEBKIT
+    QWebView
+#else
+    QWebEngineView
+#endif
 {
     Q_OBJECT
 
 public:
-    explicit MarkdownPreviewWidget(QObject* parent = nullptr);
-    ~MarkdownPreviewWidget() override;
+    KMarkdownView(KAbstractMarkdownSourceDocument* sourceDocument, QWidget* parent = nullptr);
+    ~KMarkdownView() override;
 
-    QWidget* widget() const override;
-    void setDocument(const KTextEditor::Document* document) override;
-
-private:
-    void updatePreview();
-    void handleOpenUrlRequested(const QUrl& url) const;
+Q_SIGNALS:
+    void openUrlRequested(const QUrl& url);
 
 private:
-    MarkdownSourceDocument* m_markdownSourceDocument = nullptr;
-    KMarkdownView* m_widget = nullptr;
+#ifdef USE_QTWEBKIT
+    void openUrlExternally(const QUrl& url);
+#endif
+
+private:
+#ifndef USE_QTWEBKIT
+    KMarkdownViewPage* m_viewPage = nullptr;
+#endif
+
+    KAbstractMarkdownSourceDocument* const m_sourceDocument;
 };
 
 #endif

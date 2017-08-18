@@ -17,32 +17,39 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#ifndef MARKDOWNPREVIEWWIDGET_H
-#define MARKDOWNPREVIEWWIDGET_H
+#ifndef MARKDOWNPART_H
+#define MARKDOWNPART_H
 
-#include <documentpreviewwidget.h>
+// KF headers
+#include <KParts/ReadOnlyPart>
 
+class MarkdownBrowserExtension;
 class MarkdownSourceDocument;
 class KMarkdownView;
 
-class MarkdownPreviewWidget : public KTextEditorPreview::DocumentPreviewWidget
+class MarkdownPart : public KParts::ReadOnlyPart
 {
     Q_OBJECT
 
 public:
-    explicit MarkdownPreviewWidget(QObject* parent = nullptr);
-    ~MarkdownPreviewWidget() override;
+    /**
+     * Default constructor, with arguments as expected by KPluginFactory
+     */
+    MarkdownPart(QWidget* parentWidget, QObject* parent, const QVariantList& arg);
 
-    QWidget* widget() const override;
-    void setDocument(const KTextEditor::Document* document) override;
+    /**
+     * Destructor
+     */
+    ~MarkdownPart() override;
+
+protected: // KParts::ReadOnlyPart API
+    bool openFile() override;
 
 private:
-    void updatePreview();
-    void handleOpenUrlRequested(const QUrl& url) const;
+    MarkdownSourceDocument* m_sourceDocument;
+    KMarkdownView* m_widget;
 
-private:
-    MarkdownSourceDocument* m_markdownSourceDocument = nullptr;
-    KMarkdownView* m_widget = nullptr;
+    MarkdownBrowserExtension* m_browserExtension;
 };
 
 #endif

@@ -17,30 +17,17 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#include "markdownpreviewpage.h"
+#include "markdownbrowserextension.h"
 
-#include <QDesktopServices>
+#include "markdownpart.h"
 
-MarkdownPreviewPage::MarkdownPreviewPage(QObject* parent)
-    : QWebEnginePage(parent)
+MarkdownBrowserExtension::MarkdownBrowserExtension(MarkdownPart* part)
+    : KParts::BrowserExtension(part)
+    , m_part(part)
 {
 }
 
-
-MarkdownPreviewPage::~MarkdownPreviewPage() = default;
-
-bool MarkdownPreviewPage::acceptNavigationRequest(const QUrl& url,
-                                                  QWebEnginePage::NavigationType type,
-                                                  bool isMainFrame)
+void MarkdownBrowserExtension::requestOpenUrl(const QUrl& url)
 {
-    Q_UNUSED(type);
-    Q_UNUSED(isMainFrame);
-
-    // Only allow qrc:/index.html.
-    if (url.scheme() == QLatin1String("qrc")) {
-        return true;
-    }
-
-    QDesktopServices::openUrl(url);
-    return false;
+    openUrlRequest(url);
 }

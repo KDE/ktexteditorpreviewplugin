@@ -17,21 +17,16 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#ifndef MARKDOWNPREVIEWPAGE_H
-#define MARKDOWNPREVIEWPAGE_H
+#include "markdownsourcedocument.h"
 
-#include <QWebEnginePage>
-
-class MarkdownPreviewPage : public QWebEnginePage
+void MarkdownSourceDocument::setText(const QString& text)
 {
-    Q_OBJECT
+    m_text = text;
 
-public:
-    explicit MarkdownPreviewPage(QObject* parent);
-    ~MarkdownPreviewPage() override;
+    emit textChanged(m_text);
+}
 
-protected:
-    bool acceptNavigationRequest(const QUrl& url, NavigationType type, bool isMainFrame) override;
-};
-
-#endif
+QString MarkdownSourceDocument::text() const
+{
+    return m_text;
+}

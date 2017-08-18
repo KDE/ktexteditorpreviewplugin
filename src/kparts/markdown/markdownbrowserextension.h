@@ -17,35 +17,26 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#ifndef DOCUMENTPROXY_H
-#define DOCUMENTPROXY_H
+#ifndef MARKDOWNBROWSEREXTENSION_H
+#define MARKDOWNBROWSEREXTENSION_H
 
-#include <QObject>
+// KF headers
+#include <KParts/BrowserExtension>
 
-namespace KTextEditor {
-class Document;
-}
+class MarkdownPart;
 
-class DocumentProxy : public QObject
+class MarkdownBrowserExtension : public KParts::BrowserExtension
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString text READ text NOTIFY textChanged FINAL)
-
 public:
-    explicit DocumentProxy(QObject *parent) : QObject(parent) {}
+    explicit MarkdownBrowserExtension(MarkdownPart* part);
 
-    void setDocument(const KTextEditor::Document* document);
-
-    QString text() const;
-
-    void handleTextChanged();
-
-Q_SIGNALS:
-    void textChanged(const QString& text);
+public Q_SLOTS:
+    void requestOpenUrl(const QUrl& url);
 
 private:
-    const KTextEditor::Document* m_document = nullptr;
+    MarkdownPart* m_part;
 };
 
 #endif

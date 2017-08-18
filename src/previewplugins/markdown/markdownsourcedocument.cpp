@@ -17,36 +17,36 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#include "documentproxy.h"
+#include "markdownsourcedocument.h"
 
 // KF
 #include <KTextEditor/Document>
 
-void DocumentProxy::setDocument(const KTextEditor::Document* document)
+void MarkdownSourceDocument::setDocument(const KTextEditor::Document* document)
 {
     if (m_document == document) {
         return;
     }
 
     if (m_document) {
-        disconnect(m_document, &KTextEditor::Document::textChanged, this, &DocumentProxy::handleTextChanged);
+        disconnect(m_document, &KTextEditor::Document::textChanged, this, &MarkdownSourceDocument::handleTextChanged);
     }
 
     m_document = document;
 
     if (m_document) {
-        connect(m_document, &KTextEditor::Document::textChanged, this, &DocumentProxy::handleTextChanged);
+        connect(m_document, &KTextEditor::Document::textChanged, this, &MarkdownSourceDocument::handleTextChanged);
     }
 
     handleTextChanged();
 }
 
-void DocumentProxy::handleTextChanged()
+void MarkdownSourceDocument::handleTextChanged()
 {
     emit textChanged(m_document->text());
 }
 
-QString DocumentProxy::text() const
+QString MarkdownSourceDocument::text() const
 {
     return m_document ? m_document->text() : QString();
 }

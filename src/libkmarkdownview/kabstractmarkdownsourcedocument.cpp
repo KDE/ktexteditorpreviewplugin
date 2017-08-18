@@ -17,32 +17,8 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#ifndef MARKDOWNPREVIEWWIDGET_H
-#define MARKDOWNPREVIEWWIDGET_H
+#include "kabstractmarkdownsourcedocument.h"
 
-#include <documentpreviewwidget.h>
-
-class MarkdownSourceDocument;
-class KMarkdownView;
-
-class MarkdownPreviewWidget : public KTextEditorPreview::DocumentPreviewWidget
-{
-    Q_OBJECT
-
-public:
-    explicit MarkdownPreviewWidget(QObject* parent = nullptr);
-    ~MarkdownPreviewWidget() override;
-
-    QWidget* widget() const override;
-    void setDocument(const KTextEditor::Document* document) override;
-
-private:
-    void updatePreview();
-    void handleOpenUrlRequested(const QUrl& url) const;
-
-private:
-    MarkdownSourceDocument* m_markdownSourceDocument = nullptr;
-    KMarkdownView* m_widget = nullptr;
-};
-
-#endif
+KAbstractMarkdownSourceDocument::KAbstractMarkdownSourceDocument(QObject *parent)
+    : QObject(parent)
+{}

@@ -1,0 +1,7 @@
+<!DOCTYPE gui SYSTEM "kpartgui.dtd">
+<gui name="markdownpart" version="1" translationDomain="markdownpart">
+
+<MenuBar>
+</MenuBar>
+
+</gui>

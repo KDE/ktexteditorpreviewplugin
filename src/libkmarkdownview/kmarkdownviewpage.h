@@ -17,32 +17,24 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#ifndef MARKDOWNPREVIEWWIDGET_H
-#define MARKDOWNPREVIEWWIDGET_H
+#ifndef KMARKDOWNVIEWPAGE_H
+#define KMARKDOWNVIEWPAGE_H
 
-#include <documentpreviewwidget.h>
+#include <QWebEnginePage>
 
-class MarkdownSourceDocument;
-class KMarkdownView;
-
-class MarkdownPreviewWidget : public KTextEditorPreview::DocumentPreviewWidget
+class KMarkdownViewPage : public QWebEnginePage
 {
     Q_OBJECT
 
 public:
-    explicit MarkdownPreviewWidget(QObject* parent = nullptr);
-    ~MarkdownPreviewWidget() override;
+    explicit KMarkdownViewPage(QObject* parent);
+    ~KMarkdownViewPage() override;
 
-    QWidget* widget() const override;
-    void setDocument(const KTextEditor::Document* document) override;
+Q_SIGNALS:
+    void openUrlRequested(const QUrl& url);
 
-private:
-    void updatePreview();
-    void handleOpenUrlRequested(const QUrl& url) const;
-
-private:
-    MarkdownSourceDocument* m_markdownSourceDocument = nullptr;
-    KMarkdownView* m_widget = nullptr;
+protected:
+    bool acceptNavigationRequest(const QUrl& url, NavigationType type, bool isMainFrame) override;
 };
 
 #endif

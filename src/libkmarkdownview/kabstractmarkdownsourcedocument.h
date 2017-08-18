@@ -17,32 +17,28 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#ifndef MARKDOWNPREVIEWWIDGET_H
-#define MARKDOWNPREVIEWWIDGET_H
+#ifndef KABSTRACTMARKDOWNSOURCEDOCUMENT_H
+#define KABSTRACTMARKDOWNSOURCEDOCUMENT_H
 
-#include <documentpreviewwidget.h>
+#include <kmarkdownview_export.h>
 
-class MarkdownSourceDocument;
-class KMarkdownView;
+#include <QObject>
+#include <QString>
 
-class MarkdownPreviewWidget : public KTextEditorPreview::DocumentPreviewWidget
+
+class KMARKDOWNVIEW_EXPORT KAbstractMarkdownSourceDocument : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(QString text READ text NOTIFY textChanged FINAL)
+
 public:
-    explicit MarkdownPreviewWidget(QObject* parent = nullptr);
-    ~MarkdownPreviewWidget() override;
+    explicit KAbstractMarkdownSourceDocument(QObject *parent);
 
-    QWidget* widget() const override;
-    void setDocument(const KTextEditor::Document* document) override;
+    virtual QString text() const = 0;
 
-private:
-    void updatePreview();
-    void handleOpenUrlRequested(const QUrl& url) const;
-
-private:
-    MarkdownSourceDocument* m_markdownSourceDocument = nullptr;
-    KMarkdownView* m_widget = nullptr;
+Q_SIGNALS:
+    void textChanged(const QString& text);
 };
 
 #endif
