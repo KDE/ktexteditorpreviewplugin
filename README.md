@@ -7,8 +7,12 @@ for [Kate](https://www.kate-editor.org/) & [KDevelop](https://www.kdevelop.org/)
 KTextEditor using programs.
 
 The plugin enables a live preview of the currently edited text document in the
-final format. It is extendable by sub-plugins again, each sub-plugin providing support for a certain
-format/mimetype.
+final format. For the display it uses the KParts plugin for the given mimetype
+which is currently selected as the preferred one. If there is no matching KParts,
+no preview is possible.
+
+Also comes with a KParts plugin for Markdown (mimetype text/markdown) for demo purposes.
+That one will be stand-alone project later.
 
 ### State: Early working prototype
 
@@ -18,7 +22,7 @@ release (besides being accessable from public repos).
 While it can be used already and should stay usable all the time,
 there is no support or guarantee on anything yet.
 
-The API of the preview sub-plugins, features and UI are still up for discussion.
+The features and UI are still up for discussion.
 What would *you* like to see?
 
 
