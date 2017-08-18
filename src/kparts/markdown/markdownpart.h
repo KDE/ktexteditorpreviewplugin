@@ -20,8 +20,11 @@
 #ifndef MARKDOWNPART_H
 #define MARKDOWNPART_H
 
-// KF headers
+// KF
 #include <KParts/ReadOnlyPart>
+
+// Qt
+#include <QByteArray>
 
 class MarkdownBrowserExtension;
 class MarkdownSourceDocument;
@@ -45,11 +48,17 @@ public:
 protected: // KParts::ReadOnlyPart API
     bool openFile() override;
 
+    bool doOpenStream(const QString& mimeType) override;
+    bool doWriteStream(const QByteArray& data) override;
+    bool doCloseStream() override;
+
 private:
     MarkdownSourceDocument* m_sourceDocument;
     KMarkdownView* m_widget;
 
     MarkdownBrowserExtension* m_browserExtension;
+
+    QByteArray m_streamedData;
 };
 
 #endif

@@ -32,6 +32,8 @@
 // Qt
 #include <QFile>
 #include <QTextStream>
+#include <QMimeDatabase>
+#include <QBuffer>
 
 K_PLUGIN_FACTORY(MarkdownPartFactory, registerPlugin<MarkdownPart>();)
 
@@ -73,6 +75,42 @@ bool MarkdownPart::openFile()
 
     m_sourceDocument->setText(text);
 
+    return true;
+}
+
+bool MarkdownPart::doOpenStream(const QString& mimeType)
+{
+    auto mime = QMimeDatabase().mimeTypeForName(mimeType);
+    if (!mime.inherits(QStringLiteral("text/markdown"))) {
+        return false;
+    }
+
+    m_streamedData.clear();
+    m_sourceDocument->setText(QString());
+    return true;
+}
+
+bool MarkdownPart::doWriteStream(const QByteArray& data)
+{
+    m_streamedData.append(data);
+    return true;
+}
+
+bool MarkdownPart::doCloseStream()
+{
+    QBuffer buffer(&m_streamedData);
+
+    if (!buffer.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        m_streamedData.clear();
+        return false;
+    }
+
+    QTextStream stream(&buffer);
+    QString text = stream.readAll();
+
+    m_sourceDocument->setText(text);
+
+    m_streamedData.clear();
     return true;
 }
 
