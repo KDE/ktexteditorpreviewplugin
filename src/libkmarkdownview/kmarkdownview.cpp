@@ -64,3 +64,12 @@ KMarkdownView::KMarkdownView(KAbstractMarkdownSourceDocument* sourceDocument, QW
 }
 
 KMarkdownView::~KMarkdownView() = default;
+
+KMarkdownView::ScrollPosition KMarkdownView::scrollPosition() const
+{
+#ifdef USE_QTWEBKIT
+    return page()->mainFrame()->scrollPosition();
+#else
+    return page()->scrollPosition();
+#endif
+}

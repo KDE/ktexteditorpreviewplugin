@@ -32,6 +32,9 @@ class MarkdownBrowserExtension : public KParts::BrowserExtension
 public:
     explicit MarkdownBrowserExtension(MarkdownPart* part);
 
+    int xOffset() override;
+    int yOffset() override;
+
 public Q_SLOTS:
     void copy();
 

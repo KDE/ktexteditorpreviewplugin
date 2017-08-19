@@ -48,3 +48,13 @@ void MarkdownBrowserExtension::requestOpenUrlNewWindow(const QUrl& url)
 {
     emit createNewWindow(url);
 }
+
+int MarkdownBrowserExtension::xOffset()
+{
+    return m_part->view()->scrollPosition().x();
+}
+
+int MarkdownBrowserExtension::yOffset()
+{
+    return m_part->view()->scrollPosition().y();
+}

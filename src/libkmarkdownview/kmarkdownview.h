@@ -46,8 +46,10 @@ class KMARKDOWNVIEW_EXPORT KMarkdownView : public
 
 #ifdef USE_QTWEBKIT
     typedef QWebPage WebPage;
+    typedef QPoint ScrollPosition;
 #else
     typedef QWebEnginePage WebPage;
+    typedef QPointF ScrollPosition;
 #endif
 
 public:
@@ -57,6 +59,7 @@ public:
 public:
     void copyText();
     bool canCopyText() const;
+    ScrollPosition scrollPosition() const;
 
 Q_SIGNALS:
     void openUrlRequested(const QUrl& url);
