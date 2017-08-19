@@ -60,7 +60,7 @@ KMarkdownView::KMarkdownView(KAbstractMarkdownSourceDocument* sourceDocument, QW
     m_viewPage->setWebChannel(channel);
 #endif
 
-    setUrl(QUrl("qrc:/ktexteditorpreview/markdown/index.html"));
+    setUrl(QUrl("qrc:/kmarkdownview/index.html"));
 }
 
 KMarkdownView::~KMarkdownView() = default;
