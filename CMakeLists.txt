@@ -26,7 +26,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
 
 # pass -DUSE_QTWEBKIT=TRUE to enforce usage of webkit
 if (NOT USE_QTWEBKIT)
-    find_package(Qt5WebEngineWidgets CONFIG QUIET)
+    find_package(Qt5WebEngineWidgets "5.7.0" CONFIG QUIET)
     set_package_properties(Qt5WebEngineWidgets PROPERTIES
         PURPOSE "Required for markdown preview, fallback is Qt5WebKitWidgets"
         URL "https://qt.io/"
