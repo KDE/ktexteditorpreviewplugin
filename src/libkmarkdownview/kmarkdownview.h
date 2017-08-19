@@ -58,6 +58,7 @@ public:
 
 public:
     void copyText();
+    void selectAllText();
     bool canCopyText() const;
     ScrollPosition scrollPosition() const;
 
@@ -80,6 +81,11 @@ private:
 inline void KMarkdownView::copyText()
 {
     triggerPageAction(WebPage::Copy);
+}
+
+inline void KMarkdownView::selectAllText()
+{
+    triggerPageAction(WebPage::SelectAll);
 }
 
 inline bool KMarkdownView::canCopyText() const

@@ -37,6 +37,7 @@ public:
 
 public Q_SLOTS:
     void copy();
+    void selectAll();
 
     void updateEditActions();
     void requestOpenUrl(const QUrl& url);

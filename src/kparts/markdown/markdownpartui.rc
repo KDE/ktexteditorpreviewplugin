@@ -2,6 +2,9 @@
 <gui name="markdownpart" version="1" translationDomain="markdownpart">
 
 <MenuBar>
+<Menu name="edit">
+  <Action name="selectAll" />
+</Menu>
 </MenuBar>
 
 </gui>

@@ -55,6 +55,9 @@ protected: // KParts::ReadOnlyPart API
     bool doCloseStream() override;
 
 private:
+    void setupActions();
+
+private:
     MarkdownSourceDocument* m_sourceDocument;
     KMarkdownView* m_widget;
 

@@ -34,6 +34,11 @@ void MarkdownBrowserExtension::copy()
     m_part->view()->copyText();
 }
 
+void MarkdownBrowserExtension::selectAll()
+{
+    m_part->view()->selectAllText();
+}
+
 void MarkdownBrowserExtension::updateEditActions()
 {
     emit enableAction("copy", m_part->view()->canCopyText());

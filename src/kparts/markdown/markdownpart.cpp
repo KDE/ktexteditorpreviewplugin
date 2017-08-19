@@ -27,6 +27,8 @@
 // KF
 #include <KPluginFactory>
 #include <KAboutData>
+#include <KActionCollection>
+#include <KStandardAction>
 #include <KLocalizedString>
 
 // Qt
@@ -60,9 +62,22 @@ MarkdownPart::MarkdownPart(QWidget* parentWidget, QObject* parent, const QVarian
             m_browserExtension, &MarkdownBrowserExtension::requestOpenUrl);
     connect(m_widget, &KMarkdownView::selectionChanged,
             m_browserExtension, &MarkdownBrowserExtension::updateEditActions);
+//     connect(m_widget, &KMarkdownView::linkMiddleOrCtrlClicked,
+//             this, &MarkdownBrowserExtension::requestOpenUrlNewWindow);
+
+    setupActions();
 }
 
 MarkdownPart::~MarkdownPart() = default;
+
+
+void MarkdownPart::setupActions()
+{
+    auto action = actionCollection()->addAction(KStandardAction::SelectAll, "selectAll");
+    connect(action, &QAction::triggered, m_browserExtension, &MarkdownBrowserExtension::selectAll);
+    action->setShortcutContext(Qt::WidgetShortcut);
+    m_widget->addAction(action);
+}
 
 bool MarkdownPart::openFile()
 {
