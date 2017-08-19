@@ -43,3 +43,8 @@ void MarkdownBrowserExtension::requestOpenUrl(const QUrl& url)
 {
     emit openUrlRequest(url);
 }
+
+void MarkdownBrowserExtension::requestOpenUrlNewWindow(const QUrl& url)
+{
+    emit createNewWindow(url);
+}

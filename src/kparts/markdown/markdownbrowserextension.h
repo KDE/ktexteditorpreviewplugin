@@ -37,6 +37,7 @@ public Q_SLOTS:
 
     void updateEditActions();
     void requestOpenUrl(const QUrl& url);
+    void requestOpenUrlNewWindow(const QUrl& url);
 
 private:
     MarkdownPart* m_part;
