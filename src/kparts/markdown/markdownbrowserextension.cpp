@@ -20,11 +20,23 @@
 #include "markdownbrowserextension.h"
 
 #include "markdownpart.h"
+#include <kmarkdownview.h>
 
 MarkdownBrowserExtension::MarkdownBrowserExtension(MarkdownPart* part)
     : KParts::BrowserExtension(part)
     , m_part(part)
 {
+     enableAction("copy", false);
+}
+
+void MarkdownBrowserExtension::copy()
+{
+    m_part->view()->copyText();
+}
+
+void MarkdownBrowserExtension::updateEditActions()
+{
+    enableAction("copy", m_part->view()->canCopyText());
 }
 
 void MarkdownBrowserExtension::requestOpenUrl(const QUrl& url)

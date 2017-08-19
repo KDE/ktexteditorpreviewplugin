@@ -45,6 +45,8 @@ public:
      */
     ~MarkdownPart() override;
 
+    KMarkdownView* view() const;
+
 protected: // KParts::ReadOnlyPart API
     bool openFile() override;
 
@@ -60,5 +62,7 @@ private:
 
     QByteArray m_streamedData;
 };
+
+inline KMarkdownView* MarkdownPart::view() const { return m_widget; }
 
 #endif

@@ -56,7 +56,10 @@ MarkdownPart::MarkdownPart(QWidget* parentWidget, QObject* parent, const QVarian
     // set KXMLUI resource file
     setXMLFile(QStringLiteral("markdownpartui.rc"));
 
-    connect(m_widget, &KMarkdownView::openUrlRequested, m_browserExtension, &MarkdownBrowserExtension::requestOpenUrl);
+    connect(m_widget, &KMarkdownView::openUrlRequested,
+            m_browserExtension, &MarkdownBrowserExtension::requestOpenUrl);
+    connect(m_widget, &KMarkdownView::selectionChanged,
+            m_browserExtension, &MarkdownBrowserExtension::updateEditActions);
 }
 
 MarkdownPart::~MarkdownPart() = default;

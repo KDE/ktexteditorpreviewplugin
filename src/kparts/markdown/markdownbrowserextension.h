@@ -33,6 +33,9 @@ public:
     explicit MarkdownBrowserExtension(MarkdownPart* part);
 
 public Q_SLOTS:
+    void copy();
+
+    void updateEditActions();
     void requestOpenUrl(const QUrl& url);
 
 private:

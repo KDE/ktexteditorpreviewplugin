@@ -29,6 +29,7 @@
 #else
 #include <QWebEngineView>
 #endif
+#include <QAction>
 
 class KMarkdownViewPage;
 class KAbstractMarkdownSourceDocument;
@@ -43,9 +44,19 @@ class KMARKDOWNVIEW_EXPORT KMarkdownView : public
 {
     Q_OBJECT
 
+#ifdef USE_QTWEBKIT
+    typedef QWebPage WebPage;
+#else
+    typedef QWebEnginePage WebPage;
+#endif
+
 public:
     KMarkdownView(KAbstractMarkdownSourceDocument* sourceDocument, QWidget* parent = nullptr);
     ~KMarkdownView() override;
+
+public:
+    void copyText();
+    bool canCopyText() const;
 
 Q_SIGNALS:
     void openUrlRequested(const QUrl& url);
@@ -62,5 +73,15 @@ private:
 
     KAbstractMarkdownSourceDocument* const m_sourceDocument;
 };
+
+inline void KMarkdownView::copyText()
+{
+    triggerPageAction(WebPage::Copy);
+}
+
+inline bool KMarkdownView::canCopyText() const
+{
+    return pageAction(WebPage::Copy)->isEnabled();
+}
 
 #endif
