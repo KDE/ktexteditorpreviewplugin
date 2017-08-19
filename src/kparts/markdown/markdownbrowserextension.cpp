@@ -26,7 +26,7 @@ MarkdownBrowserExtension::MarkdownBrowserExtension(MarkdownPart* part)
     : KParts::BrowserExtension(part)
     , m_part(part)
 {
-     enableAction("copy", false);
+     emit enableAction("copy", false);
 }
 
 void MarkdownBrowserExtension::copy()
@@ -36,10 +36,10 @@ void MarkdownBrowserExtension::copy()
 
 void MarkdownBrowserExtension::updateEditActions()
 {
-    enableAction("copy", m_part->view()->canCopyText());
+    emit enableAction("copy", m_part->view()->canCopyText());
 }
 
 void MarkdownBrowserExtension::requestOpenUrl(const QUrl& url)
 {
-    openUrlRequest(url);
+    emit openUrlRequest(url);
 }
