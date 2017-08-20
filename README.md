@@ -11,9 +11,6 @@ final format. For the display it uses the KParts plugin for the given mimetype
 which is currently selected as the preferred one. If there is no matching KParts,
 no preview is possible.
 
-Also comes with a KParts plugin for Markdown (mimetype text/markdown) for demo purposes.
-That one will be stand-alone project later.
-
 ### State: Early working prototype
 
 This plugin is still work in progress and serving as a prototype. It has not yet seen a first official

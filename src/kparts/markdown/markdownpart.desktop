@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Service
-Name=Markdown
-Icon=text/markdown
-MimeType=text/markdown;
-X-KDE-ServiceTypes=KParts/ReadOnlyPart,Browser/View
-X-KDE-Library=markdownpart
