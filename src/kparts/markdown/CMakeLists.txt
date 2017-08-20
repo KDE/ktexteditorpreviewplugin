@@ -1,6 +1,7 @@
 add_definitions(-DTRANSLATION_DOMAIN=\"markdownpart\")
 
 set(markdownpart_SRCS
+    markdownpartfactory.cpp
     markdownpart.cpp
     markdownsourcedocument.cpp
     markdownbrowserextension.cpp

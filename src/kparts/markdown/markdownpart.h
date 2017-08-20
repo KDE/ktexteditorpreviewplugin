@@ -29,16 +29,22 @@
 class MarkdownBrowserExtension;
 class MarkdownSourceDocument;
 class KMarkdownView;
+class KAboutData;
 
 class MarkdownPart : public KParts::ReadOnlyPart
 {
     Q_OBJECT
 
 public:
+    enum Modus {
+        ReadOnlyModus = 0,
+        BrowserViewModus = 1
+    };
+
     /**
-     * Default constructor, with arguments as expected by KPluginFactory
+     * Default constructor, with arguments as expected by MarkdownPartFactory
      */
-    MarkdownPart(QWidget* parentWidget, QObject* parent, const QVariantList& arg);
+    MarkdownPart(QWidget* parentWidget, QObject* parent, const KAboutData& aboutData, Modus modus);
 
     /**
      * Destructor
@@ -46,6 +52,14 @@ public:
     ~MarkdownPart() override;
 
     KMarkdownView* view() const;
+
+    QAction* createCopySelectionAction(QObject* parent);
+    QAction* createCopyEmailAddressAction(QObject* parent, const QUrl& mailtoUrl);
+    QAction* createCopyLinkTextAction(QObject* parent, const QString& text);
+    QAction* createCopyLinkUrlAction(QObject* parent);
+    QAction* createSaveLinkAsAction(QObject* parent);
+
+    void copySelection();
 
 protected: // KParts::ReadOnlyPart API
     bool openFile() override;
@@ -56,12 +70,20 @@ protected: // KParts::ReadOnlyPart API
 
 private:
     void setupActions();
+    void handleOpenUrlRequest(const QUrl& url);
+    void requestContextMenu(const QPoint& globalPos,
+                            const QUrl& linkUrl, const QString& linkText,
+                            bool hasSelection, bool forcesNewWindow);
+
+    void copyLinkUrl();
+    void saveLinkAs();
+    void selectAll();
 
 private:
     MarkdownSourceDocument* m_sourceDocument;
     KMarkdownView* m_widget;
 
-    MarkdownBrowserExtension* m_browserExtension;
+    MarkdownBrowserExtension* m_browserExtension = nullptr;
 
     QByteArray m_streamedData;
 };

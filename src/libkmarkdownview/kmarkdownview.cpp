@@ -25,12 +25,17 @@
 
 #include "kabstractmarkdownsourcedocument.h"
 
+// Qt
 #ifdef USE_QTWEBKIT
 #include <QWebPage>
 #include <QWebFrame>
+#include <QWebHitTestResult>
 #else
 #include <QWebChannel>
+#include <QWebEngineContextMenuData>
 #endif
+#include <QContextMenuEvent>
+
 
 KMarkdownView::KMarkdownView(KAbstractMarkdownSourceDocument* sourceDocument, QWidget* parent)
 #ifdef USE_QTWEBKIT
@@ -49,7 +54,6 @@ KMarkdownView::KMarkdownView(KAbstractMarkdownSourceDocument* sourceDocument, QW
     setPage(m_viewPage);
     connect(m_viewPage, &KMarkdownViewPage::openUrlRequested, this, &KMarkdownView::openUrlRequested);
 #endif
-    setContextMenuPolicy(Qt::NoContextMenu);
 
 #ifdef USE_QTWEBKIT
     auto frame = page->mainFrame();
@@ -72,4 +76,36 @@ KMarkdownView::ScrollPosition KMarkdownView::scrollPosition() const
 #else
     return page()->scrollPosition();
 #endif
+}
+
+void KMarkdownView::contextMenuEvent(QContextMenuEvent* event)
+{
+#ifdef USE_QTWEBKIT
+    QWebHitTestResult result = page()->mainFrame()->hitTestContent(event->pos());
+#else
+    QWebEngineContextMenuData result = page()->contextMenuData();
+#endif
+
+    // default menu arguments
+    bool forcesNewWindow = false;
+    bool hasSelection = false;
+
+    if (!result.linkUrl().isValid()) {
+#ifdef USE_QTWEBKIT
+        hasSelection = result.isContentSelected();
+#else
+        hasSelection = result.selectedText().isEmpty();
+#endif
+    } else {
+#ifdef USE_QTWEBKIT
+        // Show the OpenInThisWindow context menu item
+        forcesNewWindow = (page()->currentFrame() != result.linkTargetFrame());
+#endif
+    }
+
+    emit contextMenuRequested(event->globalPos(),
+                              result.linkUrl(), result.linkText(),
+                              hasSelection, forcesNewWindow);
+
+    event->accept();
 }

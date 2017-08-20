@@ -25,7 +25,6 @@
 #include <kmarkdownview.h>
 
 // KF
-#include <KPluginFactory>
 #include <KAboutData>
 #include <KActionCollection>
 #include <KStandardAction>
@@ -36,20 +35,20 @@
 #include <QTextStream>
 #include <QMimeDatabase>
 #include <QBuffer>
+#include <QDesktopServices>
+#include <QMimeData>
+#include <QClipboard>
+#include <QApplication>
+#include <QMenu>
 
-K_PLUGIN_FACTORY(MarkdownPartFactory, registerPlugin<MarkdownPart>();)
 
-
-MarkdownPart::MarkdownPart(QWidget* parentWidget, QObject* parent, const QVariantList& /*args*/)
+MarkdownPart::MarkdownPart(QWidget* parentWidget, QObject* parent, const KAboutData& aboutData, Modus modus)
     : KParts::ReadOnlyPart(parent)
     , m_sourceDocument(new MarkdownSourceDocument(this))
     , m_widget(new KMarkdownView(m_sourceDocument, parentWidget))
-    , m_browserExtension(new MarkdownBrowserExtension(this))
 {
     // set component data
     // the first arg must be the same as the subdirectory into which the part's rc file is installed
-    KAboutData aboutData("markdownpart", i18n("Markdown"), QStringLiteral("0.1"));
-    aboutData.addAuthor(i18n("Friedrich W. H. Kossebau"), i18n("Author"), QStringLiteral("kossebau@kde.org"));
     setComponentData(aboutData);
 
     // set internal UI
@@ -58,12 +57,22 @@ MarkdownPart::MarkdownPart(QWidget* parentWidget, QObject* parent, const QVarian
     // set KXMLUI resource file
     setXMLFile(QStringLiteral("markdownpartui.rc"));
 
-    connect(m_widget, &KMarkdownView::openUrlRequested,
-            m_browserExtension, &MarkdownBrowserExtension::requestOpenUrl);
-    connect(m_widget, &KMarkdownView::selectionChanged,
-            m_browserExtension, &MarkdownBrowserExtension::updateEditActions);
-//     connect(m_widget, &KMarkdownView::linkMiddleOrCtrlClicked,
-//             this, &MarkdownBrowserExtension::requestOpenUrlNewWindow);
+    if (modus == BrowserViewModus) {
+        m_browserExtension = new MarkdownBrowserExtension(this);
+        connect(m_widget, &KMarkdownView::openUrlRequested,
+                m_browserExtension, &MarkdownBrowserExtension::requestOpenUrl);
+        connect(m_widget, &KMarkdownView::selectionChanged,
+                m_browserExtension, &MarkdownBrowserExtension::updateEditActions);
+//         connect(m_widget, &KMarkdownView::linkMiddleOrCtrlClicked,
+//                 this, &MarkdownBrowserExtension::requestOpenUrlNewWindow);
+        connect(m_widget, &KMarkdownView::contextMenuRequested,
+                m_browserExtension, &MarkdownBrowserExtension::requestContextMenu);
+    } else {
+        connect(m_widget, &KMarkdownView::openUrlRequested,
+                this, &MarkdownPart::handleOpenUrlRequest);
+        connect(m_widget, &KMarkdownView::contextMenuRequested,
+                this, &MarkdownPart::requestContextMenu);
+    }
 
     setupActions();
 }
@@ -74,7 +83,7 @@ MarkdownPart::~MarkdownPart() = default;
 void MarkdownPart::setupActions()
 {
     auto action = actionCollection()->addAction(KStandardAction::SelectAll, "selectAll");
-    connect(action, &QAction::triggered, m_browserExtension, &MarkdownBrowserExtension::selectAll);
+    connect(action, &QAction::triggered, this, &MarkdownPart::selectAll);
     action->setShortcutContext(Qt::WidgetShortcut);
     m_widget->addAction(action);
 }
@@ -132,5 +141,116 @@ bool MarkdownPart::doCloseStream()
     return true;
 }
 
-// needed for K_PLUGIN_FACTORY
-#include <markdownpart.moc>
+void MarkdownPart::handleOpenUrlRequest(const QUrl& url)
+{
+    QDesktopServices::openUrl(url);
+}
+
+void MarkdownPart::requestContextMenu(const QPoint& globalPos,
+                                      const QUrl& linkUrl, const QString& linkText,
+                                      bool hasSelection, bool forcesNewWindow)
+{
+    Q_UNUSED(forcesNewWindow);
+
+    QMenu menu(m_widget);
+
+    if (!linkUrl.isValid()) {
+        if (hasSelection) {
+            menu.addAction(createCopySelectionAction(&menu));
+        }
+    } else {
+        auto action = menu.addAction(i18n("Open Link"));
+        connect(action, &QAction::triggered, this, [&] {
+            handleOpenUrlRequest(linkUrl);
+        });
+        menu.addSeparator();
+
+        if (linkUrl.scheme() == QLatin1String("mailto")) {
+            menu.addAction(createCopyEmailAddressAction(&menu, linkUrl));
+        } else {
+            if (!linkText.isEmpty()) {
+                menu.addAction(createCopyLinkTextAction(&menu, linkText));
+            }
+
+            menu.addAction(createCopyLinkUrlAction(&menu));
+        }
+    }
+
+    if (!menu.isEmpty()) {
+        menu.exec(globalPos);
+    }
+}
+
+QAction* MarkdownPart::createCopySelectionAction(QObject* parent)
+{
+    auto action = KStandardAction::copy(parent);
+    action->setText(i18n("&Copy Text"));
+    connect(action, &QAction::triggered, this, &MarkdownPart::copySelection);
+
+    return action;
+}
+
+QAction* MarkdownPart::createCopyEmailAddressAction(QObject* parent, const QUrl& mailtoUrl)
+{
+    auto action = new QAction(parent);
+    action->setText(i18n("&Copy Email Address"));
+    connect(action, &QAction::triggered, parent, [&] {
+        QMimeData* data = new QMimeData;
+        data->setText(mailtoUrl.path());
+        QApplication::clipboard()->setMimeData(data, QClipboard::Clipboard);
+    });
+
+    return action;
+}
+
+QAction* MarkdownPart::createCopyLinkTextAction(QObject* parent, const QString& text)
+{
+    auto action = new QAction(parent);
+    action->setIcon(QIcon::fromTheme(QStringLiteral("edit-copy")));
+    action->setText(i18n("Copy Link &Text"));
+    connect(action, &QAction::triggered, parent, [&] {
+        QMimeData* data = new QMimeData;
+        data->setText(text);
+        QApplication::clipboard()->setMimeData(data, QClipboard::Clipboard);
+    });
+
+    return action;
+}
+
+QAction* MarkdownPart::createCopyLinkUrlAction(QObject* parent)
+{
+    auto action = new QAction(parent);
+    action->setText(i18n("Copy Link &URL"));
+    connect(action, &QAction::triggered, this, &MarkdownPart::copyLinkUrl);
+
+    return action;
+}
+
+QAction* MarkdownPart::createSaveLinkAsAction(QObject* parent)
+{
+    auto action = new QAction(parent);
+    action->setText(i18n("&Save Link As..."));
+    connect(action, &QAction::triggered, this, &MarkdownPart::saveLinkAs);
+
+    return action;
+}
+
+void MarkdownPart::copySelection()
+{
+    m_widget->copySelection();
+}
+
+void MarkdownPart::copyLinkUrl()
+{
+    m_widget->copyLinkUrl();
+}
+
+void MarkdownPart::saveLinkAs()
+{
+    m_widget->saveLinkAs();
+}
+
+void MarkdownPart::selectAll()
+{
+    m_widget->selectAllText();
+}

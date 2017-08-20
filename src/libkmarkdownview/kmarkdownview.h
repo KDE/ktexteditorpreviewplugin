@@ -44,6 +44,7 @@ class KMARKDOWNVIEW_EXPORT KMarkdownView : public
 {
     Q_OBJECT
 
+public:
 #ifdef USE_QTWEBKIT
     typedef QWebPage WebPage;
     typedef QPoint ScrollPosition;
@@ -57,13 +58,20 @@ public:
     ~KMarkdownView() override;
 
 public:
-    void copyText();
+    void copySelection();
+    void copyLinkUrl();
+    void saveLinkAs();
     void selectAllText();
     bool canCopyText() const;
     ScrollPosition scrollPosition() const;
 
 Q_SIGNALS:
     void openUrlRequested(const QUrl& url);
+    void contextMenuRequested(const QPoint& globalPos, const QUrl& linkUrl, const QString& linkText,
+                              bool hasSelection, bool forcesNewWindow);
+
+protected:
+    void contextMenuEvent(QContextMenuEvent* event) override;
 
 private:
 #ifdef USE_QTWEBKIT
@@ -78,9 +86,19 @@ private:
     KAbstractMarkdownSourceDocument* const m_sourceDocument;
 };
 
-inline void KMarkdownView::copyText()
+inline void KMarkdownView::copySelection()
 {
     triggerPageAction(WebPage::Copy);
+}
+
+inline void KMarkdownView::copyLinkUrl()
+{
+    triggerPageAction(WebPage::CopyLinkToClipboard);
+}
+
+inline void KMarkdownView::saveLinkAs()
+{
+    triggerPageAction(WebPage::DownloadLinkToDisk);
 }
 
 inline void KMarkdownView::selectAllText()

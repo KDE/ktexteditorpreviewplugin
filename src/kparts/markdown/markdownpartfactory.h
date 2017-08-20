@@ -17,38 +17,29 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .
  */
 
-#ifndef MARKDOWNBROWSEREXTENSION_H
-#define MARKDOWNBROWSEREXTENSION_H
+#ifndef MARKDOWNPARTFACTORY_H
+#define MARKDOWNPARTFACTORY_H
 
-// KF headers
-#include <KParts/BrowserExtension>
+#include <KPluginFactory>
+#include <KAboutData>
 
-class MarkdownPart;
-class KActionCollection;
 
-class MarkdownBrowserExtension : public KParts::BrowserExtension
+class MarkdownPartFactory : public KPluginFactory
 {
     Q_OBJECT
+    Q_PLUGIN_METADATA(IID "org.kde.KPluginFactory")
+    Q_INTERFACES(KPluginFactory)
 
 public:
-    explicit MarkdownBrowserExtension(MarkdownPart* part);
+    MarkdownPartFactory();
+    ~MarkdownPartFactory() override;
 
-    int xOffset() override;
-    int yOffset() override;
-
-public Q_SLOTS:
-    void copy();
-
-    void updateEditActions();
-    void requestOpenUrl(const QUrl& url);
-    void requestOpenUrlNewWindow(const QUrl& url);
-    void requestContextMenu(const QPoint& globalPos, const QUrl& linkUrl, const QString& linkText,
-                            bool hasSelection, bool forcesNewWindow);
+    QObject* create(const char* iface,
+                    QWidget* parentWidget, QObject* parent,
+                    const QVariantList& args, const QString& keyword) override;
 
 private:
-    MarkdownPart* m_part;
-    // needed to memory manage the context menu actions
-    KActionCollection* m_contextMenuActionCollection;
+    KAboutData m_aboutData;
 };
 
 #endif
