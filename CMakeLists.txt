@@ -9,14 +9,11 @@ set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
 include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
-include(ECMSetupVersion)
-include(CMakePackageConfigHelpers)
 include(GenerateExportHeader)
-include(ECMGenerateHeaders)
 include(FeatureSummary)
 
 set(QT_MIN_VERSION "5.6.0")
-find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Svg)
+find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED Widgets)
 
 set(KF5_MIN_VERSION "5.23.0")
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
