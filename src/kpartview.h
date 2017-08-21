@@ -49,6 +49,8 @@ public:
 
     void setDocument(KTextEditor::Document* document);
 
+    KTextEditor::Document* document() const;
+
 private:
     void triggerUpdatePreview();
     void updatePreview();

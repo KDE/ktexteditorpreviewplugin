@@ -48,7 +48,7 @@ PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, QWidget* parent)
     m_lockAction->setToolTip(i18n("Lock preview to current document"));
     m_lockAction->setCheckedState(KGuiItem(i18n("Unlock Current View"), QIcon::fromTheme(QStringLiteral("object-locked")), i18n("Unlock current view")));
     m_lockAction->setChecked(false);
-//     connect(m_editRepoAction, &QAction::triggered, this, &SnippetView::slotEditRepo);
+    connect(m_lockAction, &QAction::triggered, this, &PreviewWidget::toggleDocumentLocking);
     addAction(m_lockAction);
 
     auto label = new QLabel(i18n("No preview available."), this);
@@ -60,6 +60,8 @@ PreviewWidget::~PreviewWidget() = default;
 
 void PreviewWidget::setTextEditorView(KTextEditor::View* view)
 {
+    m_currentTextEditorView = view;
+
     if (m_lockAction->isChecked()) 
         return;
 
@@ -100,4 +102,37 @@ void PreviewWidget::setTextEditorView(KTextEditor::View* view)
     if (m_partView) {
         m_partView->setDocument(view ? view->document() : nullptr);
     }
+}
+
+void PreviewWidget::toggleDocumentLocking(bool locked)
+{
+    if (locked) {
+        if (!m_partView) {
+            // nothing to do
+            return;
+        }
+        auto document = m_partView->document();
+        connect(document, &KTextEditor::Document::aboutToClose,
+                this, &PreviewWidget::handleLockedDocumentClosing);
+    } else {
+        if (m_partView) {
+            auto document = m_partView->document();
+            disconnect(document, &KTextEditor::Document::aboutToClose,
+                       this, &PreviewWidget::handleLockedDocumentClosing);
+        }
+        // jump tp current view
+        setTextEditorView(m_currentTextEditorView);
+    }
+}
+
+void PreviewWidget::handleLockedDocumentClosing()
+{
+    // remove any current partview
+    if (m_partView) {
+        removeWidget(m_partView->widget());
+        delete m_partView;
+        m_partView = nullptr;
+    }
+
+    m_currentServiceId.clear();
 }

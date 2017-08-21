@@ -43,10 +43,15 @@ public:
     void setTextEditorView(KTextEditor::View* view);
 
 private:
+    void toggleDocumentLocking(bool locked);
+    void handleLockedDocumentClosing();
+
+private:
     KToggleAction* m_lockAction;
 
     KTextEditorPreviewPlugin* const m_core;
 
+    KTextEditor::View* m_currentTextEditorView = nullptr;
     QString m_currentServiceId;
     KPartView* m_partView = nullptr;
 };

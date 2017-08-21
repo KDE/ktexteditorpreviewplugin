@@ -68,6 +68,11 @@ QWidget* KPartView::widget() const
     return m_part ? m_part->widget() : m_errorLabel;
 }
 
+KTextEditor::Document* KPartView::document() const
+{
+    return m_document;
+}
+
 void KPartView::setDocument(KTextEditor::Document* document)
 {
     if (m_document == document) {
