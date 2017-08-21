@@ -1,4 +1,4 @@
-add_definitions(-DTRANSLATION_DOMAIN=\"ktexteditorpreview\")
+add_definitions(-DTRANSLATION_DOMAIN=\"ktexteditorpreviewplugin\")
 
 set(ktexteditorpreviewplugin_SRCS
     ktexteditorpreviewplugin.cpp
@@ -8,10 +8,6 @@ set(ktexteditorpreviewplugin_SRCS
 )
 
 add_library(ktexteditorpreviewplugin MODULE ${ktexteditorpreviewplugin_SRCS})
-
-set_target_properties(ktexteditorpreviewplugin PROPERTIES
-    EXPORT_NAME KTextEditorPreview
-)
 
 target_link_libraries(ktexteditorpreviewplugin
     KF5::TextEditor
