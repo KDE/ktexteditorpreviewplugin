@@ -119,6 +119,8 @@ void KPartView::updatePreview()
     // write current data
     m_helperFile->open();
     m_helperFile->write(m_document->text().toUtf8());
+    // truncate at end of new content
+    m_helperFile->resize( m_helperFile->pos());
     m_helperFile->flush();
 
     // TODO: find out why we need to send this queued
