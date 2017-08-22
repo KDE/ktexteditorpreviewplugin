@@ -46,9 +46,9 @@ KPartView::KPartView(const KService::Ptr& service, QObject* parent)
     if (!m_part) {
         m_errorLabel = new QLabel(errorString);
     } else {
-        m_updateTimer.setSingleShot(true);
-        m_updateTimer.setInterval(updateDelay);
-        connect(&m_updateTimer, &QTimer::timeout, this, &KPartView::updatePreview);
+        m_updateSquashingTimer.setSingleShot(true);
+        m_updateSquashingTimer.setInterval(updateDelay);
+        connect(&m_updateSquashingTimer, &QTimer::timeout, this, &KPartView::updatePreview);
 
         auto browserExtension = m_part->browserExtension();
         if (browserExtension) {
@@ -84,7 +84,7 @@ void KPartView::setDocument(KTextEditor::Document* document)
 
     if (m_document) {
         disconnect(m_document, &KTextEditor::Document::textChanged, this, &KPartView::triggerUpdatePreview);
-        m_updateTimer.stop();
+        m_updateSquashingTimer.stop();
     }
 
     m_document = document;
@@ -99,8 +99,8 @@ void KPartView::setDocument(KTextEditor::Document* document)
 
 void KPartView::triggerUpdatePreview()
 {
-    if (!m_updateTimer.isActive()) {
-        m_updateTimer.start();
+    if (!m_updateSquashingTimer.isActive()) {
+        m_updateSquashingTimer.start();
     }
 }
 
@@ -114,22 +114,22 @@ void KPartView::updatePreview()
     }
 
     // have to go via filesystem for now, not nice
-    if (!m_helperFile) {
-        m_helperFile = new QTemporaryFile(this);
+    if (!m_bufferFile) {
+        m_bufferFile = new QTemporaryFile(this);
     } else {
         // drop any old data
-        m_helperFile->close();
+        m_bufferFile->close();
     }
 
     // write current data
-    m_helperFile->open();
-    m_helperFile->write(m_document->text().toUtf8());
+    m_bufferFile->open();
+    m_bufferFile->write(m_document->text().toUtf8());
     // truncate at end of new content
-    m_helperFile->resize( m_helperFile->pos());
-    m_helperFile->flush();
+    m_bufferFile->resize(m_bufferFile->pos());
+    m_bufferFile->flush();
 
     // TODO: find out why we need to send this queued
-    QMetaObject::invokeMethod(m_part, "openUrl", Qt::QueuedConnection, Q_ARG(QUrl, QUrl::fromLocalFile(m_helperFile->fileName())));
+    QMetaObject::invokeMethod(m_part, "openUrl", Qt::QueuedConnection, Q_ARG(QUrl, QUrl::fromLocalFile(m_bufferFile->fileName())));
 }
 
 void KPartView::handleOpenUrlRequest(const QUrl& url)
