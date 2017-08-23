@@ -19,6 +19,8 @@
 
 #include "kpartview.h"
 
+#include <ktepreview_debug.h>
+
 // KF
 #include <KTextEditor/Document>
 
@@ -32,7 +34,6 @@
 #include <QDesktopServices>
 #include <QTemporaryFile>
 #include <QLabel>
-#include <QDebug>
 
 
 static const int updateDelay = 300; // ms
@@ -108,12 +109,14 @@ void KPartView::updatePreview()
 {
     // try to stream the data to avoid filesystem I/O
     if (m_part->openStream(m_document->mimeType(), QUrl(QStringLiteral("ktexteditorpreview:/data")))) {
+        qCDebug(KTEPREVIEW) << "Pushing data via streaming API";
         m_part->writeStream(m_document->text().toUtf8());
         m_part->closeStream();
         return;
     }
 
     // have to go via filesystem for now, not nice
+    qCDebug(KTEPREVIEW) << "Pushing data via temporary file";
     if (!m_bufferFile) {
         m_bufferFile = new QTemporaryFile(this);
     } else {

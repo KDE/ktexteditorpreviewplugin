@@ -21,6 +21,7 @@
 
 #include "ktexteditorpreviewplugin.h"
 #include "kpartview.h"
+#include <ktepreview_debug.h>
 
 // KF
 #include <KTextEditor/View>
@@ -37,7 +38,6 @@
 #include <QLabel>
 #include <QIcon>
 #include <QAction>
-#include <QDebug>
 
 
 PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, QWidget* parent)
@@ -69,12 +69,23 @@ void PreviewWidget::setTextEditorView(KTextEditor::View* view)
     if (view) {
         service = KMimeTypeTrader::self()->preferredService(view->document()->mimeType(),
                                                             QStringLiteral("KParts/ReadOnlyPart"));
-        // no interest in kparts which also just display the text (like katepart itself)
-        // TODO: what about parts which also support importing plain text and turning into richer format
-        // and thus have it in their mimetypes list?
-        // could that perhaps be solved by introducing the concept of "native" and "imported" mimetypes?
-        if (service && service->mimeTypes().contains(QStringLiteral("text/plain"))) {
-            service.reset();
+        if (service) {
+            qCDebug(KTEPREVIEW) << "Found preferred kpart service named" << service->name()
+                                << "with library" <<service->library()
+                                << "for mimetype" << view->document()->mimeType();
+
+            // no interest in kparts which also just display the text (like katepart itself)
+            // TODO: what about parts which also support importing plain text and turning into richer format
+            // and thus have it in their mimetypes list?
+            // could that perhaps be solved by introducing the concept of "native" and "imported" mimetypes?
+            // or making a distinction between source editors/viewers and final editors/viewers?
+            // latter would also help other source editors/viewers like a hexeditor, which "supports" any mimetype
+            if (service && service->mimeTypes().contains(QStringLiteral("text/plain"))) {
+                qCDebug(KTEPREVIEW) << "Blindly discarding preferred service as it also supports text/plain, to avoid useless plain/text preview.";
+                service.reset();
+            }
+        } else {
+            qCDebug(KTEPREVIEW) << "Found no preferred kpart service for mimetype" << view->document()->mimeType();
         }
     }
 

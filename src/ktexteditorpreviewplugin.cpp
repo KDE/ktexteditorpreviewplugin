@@ -20,13 +20,11 @@
 #include "ktexteditorpreviewplugin.h"
 
 #include "ktexteditorpreviewview.h"
+#include <ktepreview_debug.h>
 
 // KF
 #include <KTextEditor/MainWindow>
 #include <KPluginFactory>
-
-// Qt
-#include <QDebug>
 
 
 K_PLUGIN_FACTORY_WITH_JSON(KTextEditorPreviewPluginFactory, "ktexteditorpreview.json", registerPlugin<KTextEditorPreviewPlugin>();)
