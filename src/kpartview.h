@@ -39,7 +39,7 @@ class QTemporaryFile;
  *
  * The class creates a KPart from the service description passed in the constructor
  * and then takes care for feeding the content of the currently set text document
- * to the KPart for preview in the target format. both on changes in the document
+ * to the KPart for preview in the target format, both on changes in the document
  * or when a new document is set.
  *
  * The content is pushed via the KParts stream API, if the KPart instance
@@ -61,7 +61,7 @@ public:
     ~KPartView() override;
 
     /**
-     * Returns the widget object, Ownership is not transferred.
+     * Returns the widget object, ownership is not transferred.
      */
     QWidget* widget() const;
 
