@@ -107,8 +107,17 @@ void KPartView::triggerUpdatePreview()
 
 void KPartView::updatePreview()
 {
+    const auto mimeType = m_document->mimeType();
+    KParts::OpenUrlArguments arguments;
+    arguments.setMimeType(mimeType);
+    m_part->setArguments(arguments);
+
     // try to stream the data to avoid filesystem I/O
-    if (m_part->openStream(m_document->mimeType(), QUrl(QStringLiteral("ktexteditorpreview:/data")))) {
+    // create url unique for this document
+    // TODO: encode existing url instead, and for yet-to-be-stored docs some other unique id
+    const QUrl streamUrl(QStringLiteral("ktexteditorpreview:/object/%1")
+                         .arg(reinterpret_cast<quintptr>(m_document), 0, 16));
+    if (m_part->openStream(mimeType, streamUrl)) {
         qCDebug(KTEPREVIEW) << "Pushing data via streaming API";
         m_part->writeStream(m_document->text().toUtf8());
         m_part->closeStream();
@@ -116,6 +125,7 @@ void KPartView::updatePreview()
     }
 
     // have to go via filesystem for now, not nice
+    // TODO: use a new temporary file for each document, to have some unique url
     qCDebug(KTEPREVIEW) << "Pushing data via temporary file";
     if (!m_bufferFile) {
         m_bufferFile = new QTemporaryFile(this);
