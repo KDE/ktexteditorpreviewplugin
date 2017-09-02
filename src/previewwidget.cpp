@@ -60,7 +60,12 @@ PreviewWidget::~PreviewWidget() = default;
 
 void PreviewWidget::setTextEditorView(KTextEditor::View* view)
 {
+    // cache active view
     m_currentTextEditorView = view;
+
+    if (!isVisible()) {
+        return;
+    }
 
     if (m_lockAction->isChecked()) 
         return;
@@ -73,6 +78,11 @@ void PreviewWidget::setTextEditorView(KTextEditor::View* view)
             qCDebug(KTEPREVIEW) << "Found preferred kpart service named" << service->name()
                                 << "with library" <<service->library()
                                 << "for mimetype" << view->document()->mimeType();
+
+            if (service->library().isEmpty()) {
+                qCWarning(KTEPREVIEW) << "Discarding preferred kpart service due to empty library name:" << service->name();
+                service.reset();
+            }
 
             // no interest in kparts which also just display the text (like katepart itself)
             // TODO: what about parts which also support importing plain text and turning into richer format
@@ -102,16 +112,36 @@ void PreviewWidget::setTextEditorView(KTextEditor::View* view)
         m_currentServiceId = serviceId;
 
         if (service) {
+            qCDebug(KTEPREVIEW) << "Creating new kpart service instance.";
             m_partView = new KPartView(service, this);
             int index = addWidget(m_partView->widget());
             setCurrentIndex(index);
         } else {
             m_partView = nullptr;
         }
+    } else {
+        if (m_partView) {
+            qCDebug(KTEPREVIEW) << "Reusing active kpart service instance.";
+        }
     }
 
     if (m_partView) {
-        m_partView->setDocument(view ? view->document() : nullptr);
+        m_partView->setDocument(view->document());
+    }
+}
+
+void PreviewWidget::showEvent(QShowEvent* event)
+{
+    Q_UNUSED(event);
+    setTextEditorView(m_currentTextEditorView);
+}
+
+void PreviewWidget::hideEvent(QHideEvent* event)
+{
+    Q_UNUSED(event);
+    // keep active part for reuse, but close preview document
+    if (m_partView) {
+        m_partView->setDocument(nullptr);
     }
 }
 
