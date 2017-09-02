@@ -118,7 +118,7 @@ void KPartView::updatePreview()
     const QUrl streamUrl(QStringLiteral("ktexteditorpreview:/object/%1")
                          .arg(reinterpret_cast<quintptr>(m_document), 0, 16));
     if (m_part->openStream(mimeType, streamUrl)) {
-        qCDebug(KTEPREVIEW) << "Pushing data via streaming API";
+        qCDebug(KTEPREVIEW) << "Pushing data via streaming API, url:" << streamUrl.url();
         m_part->writeStream(m_document->text().toUtf8());
         m_part->closeStream();
         return;
@@ -126,13 +126,14 @@ void KPartView::updatePreview()
 
     // have to go via filesystem for now, not nice
     // TODO: use a new temporary file for each document, to have some unique url
-    qCDebug(KTEPREVIEW) << "Pushing data via temporary file";
     if (!m_bufferFile) {
         m_bufferFile = new QTemporaryFile(this);
     } else {
         // drop any old data
         m_bufferFile->close();
     }
+    const QUrl tempFileUrl(QUrl::fromLocalFile(m_bufferFile->fileName()));
+    qCDebug(KTEPREVIEW) << "Pushing data via temporary file, url:" << tempFileUrl.url();
 
     // write current data
     m_bufferFile->open();
@@ -142,7 +143,7 @@ void KPartView::updatePreview()
     m_bufferFile->flush();
 
     // TODO: find out why we need to send this queued
-    QMetaObject::invokeMethod(m_part, "openUrl", Qt::QueuedConnection, Q_ARG(QUrl, QUrl::fromLocalFile(m_bufferFile->fileName())));
+    QMetaObject::invokeMethod(m_part, "openUrl", Qt::QueuedConnection, Q_ARG(QUrl, tempFileUrl));
 }
 
 void KPartView::handleOpenUrlRequest(const QUrl& url)
