@@ -100,6 +100,12 @@ void KPartView::setDocument(KTextEditor::Document* document)
 
     m_document = document;
 
+    // delete any temporary file, to trigger creation of a new if needed
+    // for some unique url/path of the temporary file for the new document (or use a counter ourselves?)
+    // but see comment for stream url
+    delete m_bufferFile;
+    m_bufferFile = nullptr;
+
     if (m_document) {
         m_previewDirty = true;
         updatePreview();
@@ -161,7 +167,6 @@ void KPartView::updatePreview()
     }
 
     // have to go via filesystem for now, not nice
-    // TODO: use a new temporary file for each document, to have some unique url
     if (!m_bufferFile) {
         m_bufferFile = new QTemporaryFile(this);
         m_bufferFile->open();
