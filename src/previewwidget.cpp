@@ -51,6 +51,21 @@ PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, QWidget* parent)
     connect(m_lockAction, &QAction::triggered, this, &PreviewWidget::toggleDocumentLocking);
     addAction(m_lockAction);
 
+    // TODO: better icon(s)
+    const QIcon autoUpdateIcon = QIcon::fromTheme(QStringLiteral("media-playback-start"));
+    m_autoUpdateAction = new KToggleAction(autoUpdateIcon, i18n("Automatically Update Preview"), this);
+    m_autoUpdateAction->setToolTip(i18n("Enable automatic updates of the preview to the current document content"));
+    m_autoUpdateAction->setCheckedState(KGuiItem(i18n("Manually Update Preview"), autoUpdateIcon, i18n("Disable automatic updates of the preview to the current document content")));
+    m_autoUpdateAction->setChecked(true);
+    connect(m_autoUpdateAction, &QAction::triggered, this, &PreviewWidget::toggleAutoUpdating);
+    addAction(m_autoUpdateAction);
+
+    m_updateAction = new QAction(QIcon::fromTheme(QStringLiteral("view-refresh")), i18n("Update Preview"), this);
+    m_updateAction->setToolTip(i18n("Update the preview to the current document content"));
+    connect(m_updateAction, &QAction::triggered, this, &PreviewWidget::updatePreview);
+    m_updateAction->setEnabled(false);
+    addAction(m_updateAction);
+
     auto label = new QLabel(i18n("No preview available."), this);
     label->setAlignment(Qt::AlignHCenter);
     addWidget(label);
@@ -63,12 +78,11 @@ void PreviewWidget::setTextEditorView(KTextEditor::View* view)
     // cache active view
     m_currentTextEditorView = view;
 
-    if (!isVisible()) {
+    if ((m_previewedTextEditorView == view) ||
+        !isVisible() ||
+        m_lockAction->isChecked()) {
         return;
     }
-
-    if (m_lockAction->isChecked()) 
-        return;
 
     KService::Ptr service;
     if (view) {
@@ -114,6 +128,7 @@ void PreviewWidget::setTextEditorView(KTextEditor::View* view)
         if (service) {
             qCDebug(KTEPREVIEW) << "Creating new kpart service instance.";
             m_partView = new KPartView(service, this);
+            m_partView->setAutoUpdating(m_autoUpdateAction->isChecked());
             int index = addWidget(m_partView->widget());
             setCurrentIndex(index);
         } else {
@@ -128,21 +143,33 @@ void PreviewWidget::setTextEditorView(KTextEditor::View* view)
     if (m_partView) {
         m_partView->setDocument(view->document());
     }
+
+    m_previewedTextEditorView = view;
+    m_updateAction->setEnabled(m_partView && !m_autoUpdateAction->isChecked());
 }
 
 void PreviewWidget::showEvent(QShowEvent* event)
 {
     Q_UNUSED(event);
+
+    m_updateAction->setEnabled(m_partView && !m_autoUpdateAction->isChecked());
+
     setTextEditorView(m_currentTextEditorView);
 }
 
 void PreviewWidget::hideEvent(QHideEvent* event)
 {
     Q_UNUSED(event);
+
     // keep active part for reuse, but close preview document
     if (m_partView) {
-        m_partView->setDocument(nullptr);
+        // TODO: we also get hide event in kdevelop when the view is changed,
+        // need to find out how to filter this out or how to fix kdevelop
+        // so currently keep the preview document
+//         m_partView->setDocument(nullptr);
     }
+
+    m_updateAction->setEnabled(false);
 }
 
 void PreviewWidget::toggleDocumentLocking(bool locked)
@@ -164,6 +191,22 @@ void PreviewWidget::toggleDocumentLocking(bool locked)
         // jump tp current view
         setTextEditorView(m_currentTextEditorView);
     }
+}
+
+void PreviewWidget::toggleAutoUpdating(bool autoRefreshing)
+{
+    if (!m_partView) {
+        // nothing to do
+        return;
+    }
+
+    m_updateAction->setEnabled(!autoRefreshing && isVisible());
+    m_partView->setAutoUpdating(autoRefreshing);
+}
+
+void PreviewWidget::updatePreview()
+{
+    m_partView->updatePreview();
 }
 
 void PreviewWidget::handleLockedDocumentClosing()

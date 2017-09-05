@@ -46,6 +46,10 @@ KPartView::KPartView(const KService::Ptr& service, QObject* parent)
 
     if (!m_part) {
         m_errorLabel = new QLabel(errorString);
+    } else if (!m_part->widget()) {
+        // should not happen, but just be safe
+        delete m_part;
+        m_errorLabel = new QLabel(QStringLiteral("KPart provides no widget."));
     } else {
         m_updateSquashingTimer.setSingleShot(true);
         m_updateSquashingTimer.setInterval(updateDelay);
@@ -56,6 +60,7 @@ KPartView::KPartView(const KService::Ptr& service, QObject* parent)
             connect(browserExtension, &KParts::BrowserExtension::openUrlRequestDelayed,
                     this, &KPartView::handleOpenUrlRequest);
         }
+        m_part->widget()->installEventFilter(this);
     }
 }
 
@@ -72,6 +77,11 @@ QWidget* KPartView::widget() const
 KTextEditor::Document* KPartView::document() const
 {
     return m_document;
+}
+
+bool KPartView::isAutoUpdating() const
+{
+    return m_autoUpdating;
 }
 
 void KPartView::setDocument(KTextEditor::Document* document)
@@ -91,6 +101,7 @@ void KPartView::setDocument(KTextEditor::Document* document)
     m_document = document;
 
     if (m_document) {
+        m_previewDirty = true;
         updatePreview();
         connect(m_document, &KTextEditor::Document::textChanged, this, &KPartView::triggerUpdatePreview);
     } else {
@@ -98,15 +109,38 @@ void KPartView::setDocument(KTextEditor::Document* document)
     }
 }
 
+void KPartView::setAutoUpdating(bool autoUpdating)
+{
+    if (m_autoUpdating == autoUpdating) {
+        return;
+    }
+
+    m_autoUpdating = autoUpdating;
+
+    if (m_autoUpdating) {
+        if (m_document && m_part && m_previewDirty) {
+            updatePreview();
+        }
+    } else {
+        m_updateSquashingTimer.stop();
+    }
+}
+
 void KPartView::triggerUpdatePreview()
 {
-    if (!m_updateSquashingTimer.isActive()) {
+    m_previewDirty = true;
+
+    if (m_part->widget()->isVisible() && m_autoUpdating && !m_updateSquashingTimer.isActive()) {
         m_updateSquashingTimer.start();
     }
 }
 
 void KPartView::updatePreview()
 {
+    if (!m_part->widget()->isVisible()) {
+        return;
+    }
+
     const auto mimeType = m_document->mimeType();
     KParts::OpenUrlArguments arguments;
     arguments.setMimeType(mimeType);
@@ -121,6 +155,8 @@ void KPartView::updatePreview()
         qCDebug(KTEPREVIEW) << "Pushing data via streaming API, url:" << streamUrl.url();
         m_part->writeStream(m_document->text().toUtf8());
         m_part->closeStream();
+
+        m_previewDirty = false;
         return;
     }
 
@@ -128,15 +164,15 @@ void KPartView::updatePreview()
     // TODO: use a new temporary file for each document, to have some unique url
     if (!m_bufferFile) {
         m_bufferFile = new QTemporaryFile(this);
+        m_bufferFile->open();
     } else {
-        // drop any old data
-        m_bufferFile->close();
+        // reset position
+        m_bufferFile->seek(0);
     }
     const QUrl tempFileUrl(QUrl::fromLocalFile(m_bufferFile->fileName()));
     qCDebug(KTEPREVIEW) << "Pushing data via temporary file, url:" << tempFileUrl.url();
 
     // write current data
-    m_bufferFile->open();
     m_bufferFile->write(m_document->text().toUtf8());
     // truncate at end of new content
     m_bufferFile->resize(m_bufferFile->pos());
@@ -144,9 +180,23 @@ void KPartView::updatePreview()
 
     // TODO: find out why we need to send this queued
     QMetaObject::invokeMethod(m_part, "openUrl", Qt::QueuedConnection, Q_ARG(QUrl, tempFileUrl));
+
+    m_previewDirty = false;
 }
 
 void KPartView::handleOpenUrlRequest(const QUrl& url)
 {
     QDesktopServices::openUrl(url);
+}
+
+bool KPartView::eventFilter(QObject* object, QEvent* event)
+{
+    if (object == m_part->widget() && event->type() == QEvent::Show) {
+        if (m_document && m_autoUpdating && m_previewDirty) {
+            updatePreview();
+        }
+        return true;
+    }
+
+    return QObject::eventFilter(object, event);
 }

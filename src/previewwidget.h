@@ -78,13 +78,18 @@ protected:
 private:
     void toggleDocumentLocking(bool locked);
     void handleLockedDocumentClosing();
+    void toggleAutoUpdating(bool autoRefreshing);
+    void updatePreview();
 
 private:
     KToggleAction* m_lockAction;
+    KToggleAction* m_autoUpdateAction;
+    QAction* m_updateAction;
 
     KTextEditorPreviewPlugin* const m_core;
 
     KTextEditor::View* m_currentTextEditorView = nullptr;
+    KTextEditor::View* m_previewedTextEditorView = nullptr;
     QString m_currentServiceId;
     KPartView* m_partView = nullptr;
 };

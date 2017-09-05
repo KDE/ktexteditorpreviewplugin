@@ -79,9 +79,28 @@ public:
      */
     KTextEditor::Document* document() const;
 
+    /**
+     * Sets whether the preview should be updating automatically on document changes or not.
+     *
+     * @param autoUpdating whether the preview should be updating automatically on document changes or not
+     */
+    void setAutoUpdating(bool autoUpdating);
+
+    /**
+     * Returns @c true if the preview is updating automatically on document changes, @c false otherwise.
+     */
+    bool isAutoUpdating() const;
+
+    /**
+     * Update preview to current document content.
+     */
+    void updatePreview();
+
+protected:
+      bool eventFilter(QObject* object, QEvent* event) override;
+
 private:
     void triggerUpdatePreview();
-    void updatePreview();
     void handleOpenUrlRequest(const QUrl& url);
 
 private:
@@ -89,6 +108,8 @@ private:
     KParts::ReadOnlyPart* m_part = nullptr;
     KTextEditor::Document* m_document = nullptr;
 
+    bool m_autoUpdating = true;
+    bool m_previewDirty = true;
     QTimer m_updateSquashingTimer;
     QTemporaryFile* m_bufferFile = nullptr;
 };
