@@ -17,20 +17,23 @@
  *  Boston, MA 02110-1301, USA.
  */
 
-#ifndef PREVIEWWIDGET_H
-#define PREVIEWWIDGET_H
+#ifndef KTEXTEDITORPREVIEW_PREVIEWWIDGET_H
+#define KTEXTEDITORPREVIEW_PREVIEWWIDGET_H
 
 // Qt
 #include <QStackedWidget>
 
 class KTextEditorPreviewPlugin;
-class KPartView;
 
 namespace KTextEditor {
 class MainWindow;
 class View;
 }
 class KToggleAction;
+
+
+namespace KTextEditorPreview {
+class KPartView;
 
 /**
  * The actual widget shown in the toolview.
@@ -95,5 +98,7 @@ private:
     QString m_currentServiceId;
     KPartView* m_partView = nullptr;
 };
+
+}
 
 #endif

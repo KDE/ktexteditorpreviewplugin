@@ -8,7 +8,7 @@ set(ktexteditorpreviewplugin_SRCS
 )
 
 ecm_qt_declare_logging_category(ktexteditorpreviewplugin_SRCS
-    HEADER ktepreview_debug.h
+    HEADER ktexteditorpreview_debug.h
     IDENTIFIER KTEPREVIEW
     CATEGORY_NAME "ktexteditorpreviewplugin"
     DEFAULT_SEVERITY Debug # for initial development, remove line before first release

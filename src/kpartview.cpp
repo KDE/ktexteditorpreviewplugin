@@ -19,7 +19,7 @@
 
 #include "kpartview.h"
 
-#include <ktepreview_debug.h>
+#include <ktexteditorpreview_debug.h>
 
 // KF
 #include <KTextEditor/Document>
@@ -35,6 +35,8 @@
 #include <QTemporaryFile>
 #include <QLabel>
 
+
+using namespace KTextEditorPreview;
 
 static const int updateDelay = 300; // ms
 

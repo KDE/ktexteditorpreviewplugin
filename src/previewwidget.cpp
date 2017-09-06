@@ -21,7 +21,7 @@
 
 #include "ktexteditorpreviewplugin.h"
 #include "kpartview.h"
-#include <ktepreview_debug.h>
+#include <ktexteditorpreview_debug.h>
 
 // KF
 #include <KTextEditor/View>
@@ -40,6 +40,8 @@
 #include <QIcon>
 #include <QAction>
 
+
+using namespace KTextEditorPreview;
 
 PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, KTextEditor::MainWindow* mainWindow,
                              QWidget* parent)

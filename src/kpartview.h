@@ -17,11 +17,13 @@
  *  Boston, MA 02110-1301, USA.
  */
 
-#ifndef KPARTVIEW_H
-#define KPARTVIEW_H
+#ifndef KTEXTEDITORPREVIEW_KPARTVIEW_H
+#define KTEXTEDITORPREVIEW_KPARTVIEW_H
 
+// KF
 #include <KService>
 
+// Qt
 #include <QObject>
 #include <QTimer>
 
@@ -33,6 +35,8 @@ class ReadOnlyPart;
 }
 class QLabel;
 class QTemporaryFile;
+
+namespace KTextEditorPreview {
 
 /**
  * Wrapper around a KPart which handles feeding it the content of a text document
@@ -113,5 +117,7 @@ private:
     QTimer m_updateSquashingTimer;
     QTemporaryFile* m_bufferFile = nullptr;
 };
+
+}
 
 #endif

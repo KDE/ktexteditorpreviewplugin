@@ -30,6 +30,8 @@
 #include <QIcon>
 #include <QLayout>
 
+using namespace KTextEditorPreview;
+
 KTextEditorPreviewView::KTextEditorPreviewView(KTextEditorPreviewPlugin* plugin, KTextEditor::MainWindow* mainWindow)
     : QObject(mainWindow)
 {

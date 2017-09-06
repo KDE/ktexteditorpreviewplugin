@@ -20,11 +20,13 @@
 #ifndef KTEXTEDITORPREVIEWVIEW_H
 #define KTEXTEDITORPREVIEWVIEW_H
 
-// Qt headers
+// Qt
 #include <QObject>
 #include <QPointer>
 
+namespace KTextEditorPreview {
 class PreviewWidget;
+}
 
 namespace KTextEditor {
 class MainWindow;
@@ -45,7 +47,7 @@ public:
 
 private:
     QPointer<QWidget> m_toolView;
-    PreviewWidget* m_previewView;
+    KTextEditorPreview::PreviewWidget* m_previewView;
 };
 
 #endif

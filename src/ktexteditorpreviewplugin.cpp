@@ -20,7 +20,7 @@
 #include "ktexteditorpreviewplugin.h"
 
 #include "ktexteditorpreviewview.h"
-#include <ktepreview_debug.h>
+#include <ktexteditorpreview_debug.h>
 
 // KF
 #include <KTextEditor/MainWindow>

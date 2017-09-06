@@ -23,8 +23,6 @@
 // KF
 #include <KTextEditor/Plugin>
 
-class KPartPreviewer;
-
 class KTextEditorPreviewPlugin : public KTextEditor::Plugin
 {
     Q_OBJECT
