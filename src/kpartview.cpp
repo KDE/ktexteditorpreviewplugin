@@ -38,6 +38,16 @@
 
 using namespace KTextEditorPreview;
 
+// 300 ms as initial proposal, was found to be delay which worked for the
+// author with the use-case of quickly peeking over to the preview while
+// typing to see if things are working out as intended, without getting a
+// having-to-wait feeling.
+// Surely could get some more serious research what is a proper (default) value.
+// Perhaps the whole update logic cpuld also be overhauled, to only do an
+// update once there was at least xxx ms idle time to meet the use-case of
+// quickly-peeking-over. And otherwise update in bigger intervals of
+// 500-2000(?) ms, to cover the use-case of seeing from the corner of one's
+// eye that something is changing while one is editing the sources.
 static const int updateDelay = 300; // ms
 
 KPartView::KPartView(const KService::Ptr& service, QObject* parent)
@@ -148,6 +158,12 @@ void KPartView::updatePreview()
     if (!m_part->widget()->isVisible()) {
         return;
     }
+
+    // TODO: some kparts seem to steal the focus after they have loaded a file, sometimes also async
+    // that possibly needs fixing in the respective kparts, as that could be considered non-cooperative
+
+    // TODO: investigate if pushing of the data to the kpart could be done in a non-gui-thread,
+    // so their loading of the file (e.g. ReadOnlyPart::openFile() is sync design) does not block
 
     const auto mimeType = m_document->mimeType();
     KParts::OpenUrlArguments arguments;
