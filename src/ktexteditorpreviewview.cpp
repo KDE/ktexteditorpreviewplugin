@@ -23,10 +23,7 @@
 #include "previewwidget.h"
 
 // KF
-#include <KTextEditor/Document>
-#include <KTextEditor/View>
 #include <KTextEditor/MainWindow>
-
 #include <KLocalizedString>
 
 // Qt
@@ -38,29 +35,16 @@ KTextEditorPreviewView::KTextEditorPreviewView(KTextEditorPreviewPlugin* plugin,
 {
     Q_UNUSED(plugin);
 
-    // Toolview for snippets
     m_toolView = mainWindow->createToolView(plugin, QStringLiteral("ktexteditorpreviewplugin"),
                      KTextEditor::MainWindow::Right,
                      QIcon::fromTheme(QStringLiteral("document-preview")),
                      i18n("Preview"));
 
     // add preview widget
-    m_previewView = new PreviewWidget(plugin, m_toolView.data());
+    m_previewView = new PreviewWidget(plugin, mainWindow, m_toolView.data());
     m_toolView->layout()->setMargin(0);
     m_toolView->layout()->addWidget(m_previewView);
     m_toolView->addActions(m_previewView->actions());
-
-    connect(mainWindow, SIGNAL(viewChanged(KTextEditor::View*)),
-            this, SLOT(handleViewChanged(KTextEditor::View*)));
-
-    m_previewView->setTextEditorView(mainWindow->activeView());
 }
 
-KTextEditorPreviewView::~KTextEditorPreviewView()
-{
-}
-
-void KTextEditorPreviewView::handleViewChanged(KTextEditor::View* view)
-{
-    m_previewView->setTextEditorView(view);
-}
+KTextEditorPreviewView::~KTextEditorPreviewView() = default;

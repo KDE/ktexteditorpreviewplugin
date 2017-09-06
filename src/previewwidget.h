@@ -27,6 +27,7 @@ class KTextEditorPreviewPlugin;
 class KPartView;
 
 namespace KTextEditor {
+class MainWindow;
 class View;
 }
 class KToggleAction;
@@ -52,12 +53,17 @@ public:
      * Constructor
      *
      * @param core the plugin object
+     * @param mainWindow the main window with all the texteditor views
      * @param parent widget object taking the ownership
      */
-    PreviewWidget(KTextEditorPreviewPlugin* core, QWidget* parent);
+    PreviewWidget(KTextEditorPreviewPlugin* core, KTextEditor::MainWindow* mainWindow, QWidget* parent);
     ~PreviewWidget() override;
 
-public:
+protected:
+    void showEvent(QShowEvent* event) override;
+    void hideEvent(QHideEvent* event) override;
+
+private Q_SLOTS:
     /**
      * Update the widget to the currently active view.
      *
@@ -71,10 +77,6 @@ public:
      */
     void setTextEditorView(KTextEditor::View* view);
 
-protected:
-    void showEvent(QShowEvent* event) override;
-    void hideEvent(QHideEvent* event) override;
-
 private:
     void toggleDocumentLocking(bool locked);
     void handleLockedDocumentClosing();
@@ -87,8 +89,8 @@ private:
     QAction* m_updateAction;
 
     KTextEditorPreviewPlugin* const m_core;
+    KTextEditor::MainWindow* const m_mainWindow;
 
-    KTextEditor::View* m_currentTextEditorView = nullptr;
     KTextEditor::View* m_previewedTextEditorView = nullptr;
     QString m_currentServiceId;
     KPartView* m_partView = nullptr;

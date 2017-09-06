@@ -43,9 +43,6 @@ public:
     KTextEditorPreviewView(KTextEditorPreviewPlugin* plugin, KTextEditor::MainWindow* mainWindow);
     ~KTextEditorPreviewView() override;
 
-public Q_SLOTS:
-    void handleViewChanged(KTextEditor::View* view);
-
 private:
     QPointer<QWidget> m_toolView;
     PreviewWidget* m_previewView;

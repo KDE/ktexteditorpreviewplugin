@@ -26,6 +26,7 @@
 // KF
 #include <KTextEditor/View>
 #include <KTextEditor/Document>
+#include <KTextEditor/MainWindow>
 
 #include <KService>
 #include <KMimeTypeTrader>
@@ -40,9 +41,11 @@
 #include <QAction>
 
 
-PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, QWidget* parent)
+PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, KTextEditor::MainWindow* mainWindow,
+                             QWidget* parent)
     : QStackedWidget(parent)
     , m_core(core)
+    , m_mainWindow(mainWindow)
 {
     m_lockAction = new KToggleAction(QIcon::fromTheme(QStringLiteral("object-unlocked")), i18n("Lock Current Document"), this);
     m_lockAction->setToolTip(i18n("Lock preview to current document"));
@@ -69,29 +72,37 @@ PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, QWidget* parent)
     auto label = new QLabel(i18n("No preview available."), this);
     label->setAlignment(Qt::AlignHCenter);
     addWidget(label);
+
+    connect(m_mainWindow, SIGNAL(viewChanged(KTextEditor::View*)),
+            this, SLOT(setTextEditorView(KTextEditor::View*)));
+
+    setTextEditorView(m_mainWindow->activeView());
 }
 
 PreviewWidget::~PreviewWidget() = default;
 
 void PreviewWidget::setTextEditorView(KTextEditor::View* view)
 {
-    // cache active view
-    m_currentTextEditorView = view;
-
     if ((m_previewedTextEditorView == view) ||
         !isVisible() ||
         m_lockAction->isChecked()) {
         return;
     }
 
+    m_previewedTextEditorView = view;
+
     KService::Ptr service;
-    if (view) {
-        service = KMimeTypeTrader::self()->preferredService(view->document()->mimeType(),
-                                                            QStringLiteral("KParts/ReadOnlyPart"));
+    if (m_previewedTextEditorView) {
+        // TODO: mimetype is not set for new document which have not been saved yet.
+        // needs another way to get this info, or perhaps some proper fix in Kate/Kdevelop
+        // to guess the mimetype based on current content, selected mode/highlighting etc.
+        // which then also would needs a signal mimetypeChanged and handling here
+        const auto mimeType = m_previewedTextEditorView->document()->mimeType();
+        service = KMimeTypeTrader::self()->preferredService(mimeType, QStringLiteral("KParts/ReadOnlyPart"));
         if (service) {
             qCDebug(KTEPREVIEW) << "Found preferred kpart service named" << service->name()
                                 << "with library" <<service->library()
-                                << "for mimetype" << view->document()->mimeType();
+                                << "for mimetype" << mimeType;
 
             if (service->library().isEmpty()) {
                 qCWarning(KTEPREVIEW) << "Discarding preferred kpart service due to empty library name:" << service->name();
@@ -109,7 +120,7 @@ void PreviewWidget::setTextEditorView(KTextEditor::View* view)
                 service.reset();
             }
         } else {
-            qCDebug(KTEPREVIEW) << "Found no preferred kpart service for mimetype" << view->document()->mimeType();
+            qCDebug(KTEPREVIEW) << "Found no preferred kpart service for mimetype" << mimeType;
         }
     }
 
@@ -141,10 +152,9 @@ void PreviewWidget::setTextEditorView(KTextEditor::View* view)
     }
 
     if (m_partView) {
-        m_partView->setDocument(view->document());
+        m_partView->setDocument(m_previewedTextEditorView->document());
     }
 
-    m_previewedTextEditorView = view;
     m_updateAction->setEnabled(m_partView && !m_autoUpdateAction->isChecked());
 }
 
@@ -154,7 +164,7 @@ void PreviewWidget::showEvent(QShowEvent* event)
 
     m_updateAction->setEnabled(m_partView && !m_autoUpdateAction->isChecked());
 
-    setTextEditorView(m_currentTextEditorView);
+    setTextEditorView(m_mainWindow->activeView());
 }
 
 void PreviewWidget::hideEvent(QHideEvent* event)
@@ -189,7 +199,7 @@ void PreviewWidget::toggleDocumentLocking(bool locked)
                        this, &PreviewWidget::handleLockedDocumentClosing);
         }
         // jump tp current view
-        setTextEditorView(m_currentTextEditorView);
+        setTextEditorView(m_mainWindow->activeView());
     }
 }
 
