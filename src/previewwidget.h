@@ -30,6 +30,7 @@ class MainWindow;
 class View;
 }
 class KToggleAction;
+class KConfigGroup;
 
 
 namespace KTextEditorPreview {
@@ -61,6 +62,9 @@ public:
      */
     PreviewWidget(KTextEditorPreviewPlugin* core, KTextEditor::MainWindow* mainWindow, QWidget* parent);
     ~PreviewWidget() override;
+
+    void readSessionConfig(const KConfigGroup& configGroup);
+    void writeSessionConfig(KConfigGroup& configGroup) const;
 
 protected:
     void showEvent(QShowEvent* event) override;

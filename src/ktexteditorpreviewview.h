@@ -20,6 +20,8 @@
 #ifndef KTEXTEDITORPREVIEWVIEW_H
 #define KTEXTEDITORPREVIEWVIEW_H
 
+// KF
+#include <KTextEditor/SessionConfigInterface>
 // Qt
 #include <QObject>
 #include <QPointer>
@@ -37,13 +39,17 @@ class KTextEditorPreviewPlugin;
 
 class QWidget;
 
-class KTextEditorPreviewView: public QObject
+class KTextEditorPreviewView: public QObject, public KTextEditor::SessionConfigInterface
 {
     Q_OBJECT
+    Q_INTERFACES(KTextEditor::SessionConfigInterface)
 
 public:
     KTextEditorPreviewView(KTextEditorPreviewPlugin* plugin, KTextEditor::MainWindow* mainWindow);
     ~KTextEditorPreviewView() override;
+
+    void readSessionConfig(const KConfigGroup& config) override;
+    void writeSessionConfig(KConfigGroup& config) override;
 
 private:
     QPointer<QWidget> m_toolView;

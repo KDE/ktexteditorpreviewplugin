@@ -30,7 +30,7 @@
 
 #include <KService>
 #include <KMimeTypeTrader>
-
+#include <KConfigGroup>
 #include <KLocalizedString>
 #include <KToggleAction>
 #include <KGuiItem>
@@ -82,6 +82,19 @@ PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, KTextEditor::MainWi
 }
 
 PreviewWidget::~PreviewWidget() = default;
+
+void PreviewWidget::readSessionConfig(const KConfigGroup& configGroup)
+{
+    // TODO: also store document id/url and see to catch the same document on restoring config
+    m_lockAction->setChecked(configGroup.readEntry("documentLocked", false));
+    m_autoUpdateAction->setChecked(configGroup.readEntry("automaticUpdate", true));
+}
+
+void PreviewWidget::writeSessionConfig(KConfigGroup& configGroup) const
+{
+    configGroup.writeEntry("documentLocked", m_lockAction->isChecked());
+    configGroup.writeEntry("automaticUpdate", m_autoUpdateAction->isChecked());
+}
 
 void PreviewWidget::setTextEditorView(KTextEditor::View* view)
 {

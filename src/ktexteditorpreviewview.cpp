@@ -50,3 +50,13 @@ KTextEditorPreviewView::KTextEditorPreviewView(KTextEditorPreviewPlugin* plugin,
 }
 
 KTextEditorPreviewView::~KTextEditorPreviewView() = default;
+
+void KTextEditorPreviewView::readSessionConfig(const KConfigGroup& config)
+{
+    m_previewView->readSessionConfig(config);
+}
+
+void KTextEditorPreviewView::writeSessionConfig(KConfigGroup& config)
+{
+    m_previewView->writeSessionConfig(config);
+}
