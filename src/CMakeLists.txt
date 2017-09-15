@@ -22,3 +22,7 @@ target_link_libraries(ktexteditorpreviewplugin
 )
 
 install(TARGETS ktexteditorpreviewplugin DESTINATION ${KDE_INSTALL_PLUGINDIR}/ktexteditor)
+install(
+    FILES org.kde.ktexteditorpreviewplugin.appdata.xml
+    DESTINATION ${KDE_INSTALL_METAINFODIR}
+)

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component type="desktop">
+  <id>org.kde.ktexteditorpreviewplugin</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>LGPL-2.1+</project_license>
+  <name>KTextEditor Document Preview Plugin</name>
+  <summary>Live preview of edited text documents in the target format</summary>
+  <description>
+    <p>This plugin for KTextEditor-based software (like the editor Kate or the IDE KDevelop) enables a live preview of the currently edited text document in the target format.</p>
+    <p>For the display it uses the KParts plugin which is currently selected as the preferred one for the MIME type of the document.</p>
+  </description>
+  <url type="homepage">https://cgit.kde.org/ktexteditorpreviewplugin.git/about/</url>
+  <update_contact>kossebau_at_kde.org</update_contact>
+  <project_group>KDE</project_group>
+</component>
