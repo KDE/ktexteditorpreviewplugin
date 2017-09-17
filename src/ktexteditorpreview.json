@@ -8,8 +8,8 @@
         ],
         "Description": "Preview the document in the target format",
         "Icon": "document-preview",
-        "Name": "Document Preview",
         "Id": "ktexteditorpreview",
+        "Name": "Document Preview",
         "ServiceTypes": [
             "KTextEditor/Plugin",
             "KDevelop/Plugin"
