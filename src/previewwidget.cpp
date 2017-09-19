@@ -61,7 +61,7 @@ PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, KTextEditor::MainWi
     m_autoUpdateAction = new KToggleAction(autoUpdateIcon, i18n("Automatically Update Preview"), this);
     m_autoUpdateAction->setToolTip(i18n("Enable automatic updates of the preview to the current document content"));
     m_autoUpdateAction->setCheckedState(KGuiItem(i18n("Manually Update Preview"), autoUpdateIcon, i18n("Disable automatic updates of the preview to the current document content")));
-    m_autoUpdateAction->setChecked(true);
+    m_autoUpdateAction->setChecked(false);
     connect(m_autoUpdateAction, &QAction::triggered, this, &PreviewWidget::toggleAutoUpdating);
     addAction(m_autoUpdateAction);
 
@@ -87,7 +87,7 @@ void PreviewWidget::readSessionConfig(const KConfigGroup& configGroup)
 {
     // TODO: also store document id/url and see to catch the same document on restoring config
     m_lockAction->setChecked(configGroup.readEntry("documentLocked", false));
-    m_autoUpdateAction->setChecked(configGroup.readEntry("automaticUpdate", true));
+    m_autoUpdateAction->setChecked(configGroup.readEntry("automaticUpdate", false));
 }
 
 void PreviewWidget::writeSessionConfig(KConfigGroup& configGroup) const
