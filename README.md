@@ -4,28 +4,21 @@
 
 This repository contains the KTextEditor Document Preview Plugin, a plugin for the editor [Kate](https://www.kate-editor.org/), the IDE [KDevelop](https://www.kdevelop.org/) or other software using the [KTextEditor](https://api.kde.org/frameworks/ktexteditor/html/index.html) framework.
 
-The plugin enables a live preview of the currently edited text document in the final format. For the display it uses the KParts plugin which is currently selected as the preferred one for the MIME type of the document. If there is no matching KParts, no preview is possible.
-
-### State: Early working prototype
-
-This plugin is still work in progress and serving as a prototype. It has not yet seen a first official release (besides being accessable from public repos).
-
-While it can be used already and should stay usable all the time, there is no support or guarantee on anything yet.
-
-The features and UI are still up for discussion. What would *you* like to see?
+The plugin enables a live preview of the currently edited text document in the final format. For the display it uses the KParts plugin which is currently selected as the preferred one for the MIME type of the document. If there is no matching KParts plugin, no preview is possible.
 
 
-## Installation instructions
+## Build and install the plugin
 
-Define some testing install dir:
+Define some testing install dir (example: `$HOME/mykteplugins`):
 
-    export MYKATEPLUGINPATH=$HOME/mykateplugins
+    export MYKTEPLUGINSPATH=$HOME/mykteplugins
 
 Build and install:
 
+    # assuming current dir being the top-level source folder
     mkdir build
     cd build
-    cmake .. -DKDE_INSTALL_PLUGINDIR=$MYKATEPLUGINPATH
+    cmake .. -DCMAKE_INSTALL_PREFIX=$MYKTEPLUGINSPATH
     make
     make install
 
@@ -33,7 +26,9 @@ Build and install:
 
 Start Kate or KDevelop on the commandline, with adapted QT_PLUGIN_PATH (make sure to not use a session open in another running app instance):
 
-    export QT_PLUGIN_PATH=$MYKATEPLUGINPATH:$QT_PLUGIN_PATH
+    # check the used plugin installation path as it depends on the system
+    # and replace "_REPLACE_LIB_" with e.g. "lib", "lib64" or "lib/x86_64-linux-gnu"
+    export QT_PLUGIN_PATH=$MYKTEPLUGINSPATH/_REPLACE_LIB_/plugins:$QT_PLUGIN_PATH
     kate --startanon
     # or
     kdevelop --ps
