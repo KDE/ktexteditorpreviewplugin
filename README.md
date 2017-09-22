@@ -40,7 +40,7 @@ In KDevelop, go to `Settings / Configure KDevelop... / Plugins` and make sure th
 
 ## Issues
 
-Please report bugs and feature requests in the [KDE issue tracker](https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=kate&amp;component=plugin-preview).
+Please report bugs and feature requests in the [KDE issue tracker](https://bugs.kde.org/enter_bug.cgi?format=guided&product=kate&component=plugin-preview&version=Git).
 
 
 ## Contact
