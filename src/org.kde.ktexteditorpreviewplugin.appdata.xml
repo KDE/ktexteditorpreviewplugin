@@ -35,6 +35,8 @@
     <p xml:lang="x-test">xxFor the display it uses the KParts plugin which is currently selected as the preferred one for the MIME type of the document.xx</p>
   </description>
   <url type="homepage">https://cgit.kde.org/ktexteditorpreviewplugin.git/about/</url>
+  <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=kate&amp;component=plugin-preview</url>
+  <url type="donation">https://www.kde.org/community/donations/?app=ktexteditorpreviewplugin</url>
   <update_contact>kossebau_at_kde.org</update_contact>
   <project_group>KDE</project_group>
 </component>
