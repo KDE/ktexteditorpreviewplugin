@@ -28,17 +28,25 @@
 #include <KTextEditor/Document>
 #include <KTextEditor/MainWindow>
 
+#include <KParts/ReadOnlyPart>
 #include <KService>
 #include <KMimeTypeTrader>
 #include <KConfigGroup>
 #include <KLocalizedString>
 #include <KToggleAction>
 #include <KGuiItem>
+#include <KAboutApplicationDialog>
+#include <KAboutData>
+#include <KXMLGUIFactory>
 
 // Qt
 #include <QLabel>
 #include <QIcon>
+#include <QWidgetAction>
 #include <QAction>
+#include <QMenu>
+#include <QToolButton>
+#include <QDomElement>
 
 
 using namespace KTextEditorPreview;
@@ -46,8 +54,10 @@ using namespace KTextEditorPreview;
 PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, KTextEditor::MainWindow* mainWindow,
                              QWidget* parent)
     : QStackedWidget(parent)
+    , KXMLGUIBuilder(this)
     , m_core(core)
     , m_mainWindow(mainWindow)
+    , m_xmlGuiFactory(new KXMLGUIFactory(this, this))
 {
     m_lockAction = new KToggleAction(QIcon::fromTheme(QStringLiteral("object-unlocked")), i18n("Lock Current Document"), this);
     m_lockAction->setToolTip(i18n("Lock preview to current document"));
@@ -70,6 +80,29 @@ PreviewWidget::PreviewWidget(KTextEditorPreviewPlugin* core, KTextEditor::MainWi
     connect(m_updateAction, &QAction::triggered, this, &PreviewWidget::updatePreview);
     m_updateAction->setEnabled(false);
     addAction(m_updateAction);
+
+    // manually prepare a proper dropdown menu button, because Qt itself does not do what one would expect
+    // when adding a default menu->menuAction() to a QToolbar
+    const auto kPartMenuIcon = QIcon::fromTheme(QStringLiteral("application-menu"));
+    const auto kPartMenuText = i18n("View");
+    m_kPartMenu = new QMenu(this);
+    QToolButton* toolButton = new QToolButton();
+    toolButton->setMenu(m_kPartMenu);
+    toolButton->setIcon(kPartMenuIcon);
+    toolButton->setText(kPartMenuText);
+    toolButton->setPopupMode(QToolButton::InstantPopup);
+
+    m_kPartMenuAction = new QWidgetAction(this);
+    m_kPartMenuAction->setIcon(kPartMenuIcon);
+    m_kPartMenuAction->setText(kPartMenuText);
+    m_kPartMenuAction->setMenu(m_kPartMenu);
+    m_kPartMenuAction->setDefaultWidget(toolButton);
+    m_kPartMenuAction->setEnabled(false);
+    addAction(m_kPartMenuAction);
+
+    m_aboutKPartAction = new QAction(this);
+    connect(m_aboutKPartAction, &QAction::triggered, this, &PreviewWidget::showAboutKPartPlugin);
+    m_aboutKPartAction->setEnabled(false);
 
     auto label = new QLabel(i18n("No preview available."), this);
     label->setAlignment(Qt::AlignHCenter);
@@ -145,6 +178,10 @@ void PreviewWidget::setTextEditorView(KTextEditor::View* view)
 
     if (serviceId != m_currentServiceId) {
         if (m_partView) {
+            // clear kpart menu
+            m_xmlGuiFactory->removeClient(m_partView->kPart());
+            m_kPartMenu->clear();
+
             removeWidget(m_partView->widget());
             delete m_partView;
         }
@@ -157,6 +194,16 @@ void PreviewWidget::setTextEditorView(KTextEditor::View* view)
             m_partView->setAutoUpdating(m_autoUpdateAction->isChecked());
             int index = addWidget(m_partView->widget());
             setCurrentIndex(index);
+
+            // update kpart menu
+            const auto kPart = m_partView->kPart();
+            if (kPart) {
+                const auto kPartDisplayName = kPart->componentData().displayName();
+                m_aboutKPartAction->setText(i18n("About %1", kPartDisplayName));
+                m_xmlGuiFactory->addClient(kPart);
+                m_kPartMenu->addSeparator();
+                m_kPartMenu->addAction(m_aboutKPartAction);
+            }
         } else {
             m_partView = nullptr;
         }
@@ -171,6 +218,9 @@ void PreviewWidget::setTextEditorView(KTextEditor::View* view)
     }
 
     m_updateAction->setEnabled(m_partView && !m_autoUpdateAction->isChecked());
+    const bool hasKPart = (m_partView && m_partView->kPart());
+    m_kPartMenuAction->setEnabled(hasKPart);
+    m_aboutKPartAction->setEnabled(hasKPart);
 }
 
 void PreviewWidget::showEvent(QShowEvent* event)
@@ -244,4 +294,47 @@ void PreviewWidget::handleLockedDocumentClosing()
     }
 
     m_currentServiceId.clear();
+}
+
+QWidget* PreviewWidget::createContainer(QWidget* parent, int index, const QDomElement& element, QAction*& containerAction)
+{
+    containerAction = nullptr;
+
+    if (element.attribute(QStringLiteral("deleted")).toLower() == QLatin1String("true")) {
+        return nullptr;
+    }
+
+    const QString tagName = element.tagName().toLower();
+    // filter out things we do not support
+    // TODO: consider integrating the toolbars
+    if (tagName == QLatin1String("mainwindow") ||
+        tagName == QLatin1String("toolbar") ||
+        tagName == QLatin1String("statusbar")) {
+        return nullptr;
+    }
+
+    if (tagName == QLatin1String("menubar")) {
+        return m_kPartMenu;
+    }
+
+    return KXMLGUIBuilder::createContainer(parent, index, element, containerAction);
+}
+
+void PreviewWidget::removeContainer(QWidget* container, QWidget* parent,
+                                    QDomElement& element, QAction* containerAction)
+{
+    if (container == m_kPartMenu) {
+        return;
+    }
+
+    KXMLGUIBuilder::removeContainer(container, parent, element, containerAction);
+}
+
+void PreviewWidget::showAboutKPartPlugin()
+{
+    if (m_partView && m_partView->kPart()) {
+        QPointer<KAboutApplicationDialog> aboutDialog = new KAboutApplicationDialog(m_partView->kPart()->componentData(), this);
+        aboutDialog->exec();
+        delete aboutDialog;
+    }
 }

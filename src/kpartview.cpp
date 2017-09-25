@@ -86,6 +86,11 @@ QWidget* KPartView::widget() const
     return m_part ? m_part->widget() : m_errorLabel;
 }
 
+KParts::ReadOnlyPart* KPartView::kPart() const
+{
+    return m_part;
+}
+
 KTextEditor::Document* KPartView::document() const
 {
     return m_document;

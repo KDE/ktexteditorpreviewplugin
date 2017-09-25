@@ -69,6 +69,8 @@ public:
      */
     QWidget* widget() const;
 
+    KParts::ReadOnlyPart* kPart() const;
+
     /**
      * Sets the current document whose content should be previewed by the KPart.
      *

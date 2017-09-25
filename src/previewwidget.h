@@ -20,6 +20,8 @@
 #ifndef KTEXTEDITORPREVIEW_PREVIEWWIDGET_H
 #define KTEXTEDITORPREVIEW_PREVIEWWIDGET_H
 
+// KF
+#include <KXMLGUIBuilder>
 // Qt
 #include <QStackedWidget>
 
@@ -29,9 +31,12 @@ namespace KTextEditor {
 class MainWindow;
 class View;
 }
+class KXMLGUIFactory;
 class KToggleAction;
 class KConfigGroup;
 
+class QWidgetAction;
+class QMenu;
 
 namespace KTextEditorPreview {
 class KPartView;
@@ -48,7 +53,7 @@ class KPartView;
  * be changed if another view is activated, unless the document
  * itself is closed, where then the label is shown instead.
  */
-class PreviewWidget: public QStackedWidget
+class PreviewWidget: public QStackedWidget, public KXMLGUIBuilder
 {
     Q_OBJECT
 
@@ -65,6 +70,12 @@ public:
 
     void readSessionConfig(const KConfigGroup& configGroup);
     void writeSessionConfig(KConfigGroup& configGroup) const;
+
+public: // KXMLGUIBuilder API
+    QWidget* createContainer(QWidget* parent, int index,
+                             const QDomElement& element, QAction*& containerAction) override;
+    void removeContainer(QWidget* container, QWidget* parent,
+                         QDomElement& element, QAction* containerAction) override;
 
 protected:
     void showEvent(QShowEvent* event) override;
@@ -89,11 +100,15 @@ private:
     void handleLockedDocumentClosing();
     void toggleAutoUpdating(bool autoRefreshing);
     void updatePreview();
+    void showAboutKPartPlugin();
 
 private:
     KToggleAction* m_lockAction;
     KToggleAction* m_autoUpdateAction;
     QAction* m_updateAction;
+    QWidgetAction* m_kPartMenuAction;
+    QMenu* m_kPartMenu;
+    QAction* m_aboutKPartAction;
 
     KTextEditorPreviewPlugin* const m_core;
     KTextEditor::MainWindow* const m_mainWindow;
@@ -101,6 +116,7 @@ private:
     KTextEditor::View* m_previewedTextEditorView = nullptr;
     QString m_currentServiceId;
     KPartView* m_partView = nullptr;
+    KXMLGUIFactory* m_xmlGuiFactory;
 };
 
 }
