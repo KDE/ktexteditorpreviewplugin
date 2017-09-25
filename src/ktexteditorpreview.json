@@ -25,6 +25,7 @@
         "Name[sv]": "Dokumentförhandsgranskning",
         "Name[uk]": "Попередній перегляд документів",
         "Name[x-test]": "xxDocument Previewxx",
+        "Version": "0.2.0",
         "ServiceTypes": [
             "KTextEditor/Plugin",
             "KDevelop/Plugin"
