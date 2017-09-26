@@ -4,14 +4,23 @@
             {
                 "Email": "kossebau@kde.org",
                 "Name": "Friedrich W. H. Kossebau",
+                "Name[sr@ijekavian]": "Фридрих В.Х. Косебау",
+                "Name[sr@ijekavianlatin]": "Fridrih V.H. Kosebau",
+                "Name[sr@latin]": "Fridrih V.H. Kosebau",
+                "Name[sr]": "Фридрих В.Х. Косебау",
                 "Name[x-test]": "xxFriedrich W. H. Kossebauxx"
             }
         ],
         "Description": "Preview the document in the target format",
         "Description[ca]": "Vista prèvia del document en el format de destí",
+        "Description[de]": "Vorschau des Dokuments im Zielformat",
         "Description[nl]": "Het document bekijken in het doelformaat",
         "Description[pt]": "Mostra uma antevisão do documento no formato-alvo",
         "Description[sk]": "Náhľad dokumentu v cieľovom formáte",
+        "Description[sr@ijekavian]": "Прегледајте документ у циљном формату",
+        "Description[sr@ijekavianlatin]": "Pregledajte dokument u ciljnom formatu",
+        "Description[sr@latin]": "Pregledajte dokument u ciljnom formatu",
+        "Description[sr]": "Прегледајте документ у циљном формату",
         "Description[sv]": "Förhandsgranska dokumentet i målformatet",
         "Description[uk]": "Попередній перегляд документів у форматі призначення",
         "Description[x-test]": "xxPreview the document in the target formatxx",
@@ -19,16 +28,21 @@
         "Id": "ktexteditorpreview",
         "Name": "Document Preview",
         "Name[ca]": "Vista prèvia del document",
+        "Name[de]": "Dokumentvorschau",
         "Name[nl]": "Voorbeeld van document",
         "Name[pt]": "Antevisão do Documento",
         "Name[sk]": "Náhľad dokumentu",
+        "Name[sr@ijekavian]": "Преглед документа",
+        "Name[sr@ijekavianlatin]": "Pregled dokumenta",
+        "Name[sr@latin]": "Pregled dokumenta",
+        "Name[sr]": "Преглед документа",
         "Name[sv]": "Dokumentförhandsgranskning",
         "Name[uk]": "Попередній перегляд документів",
         "Name[x-test]": "xxDocument Previewxx",
-        "Version": "0.2.0",
         "ServiceTypes": [
             "KTextEditor/Plugin",
             "KDevelop/Plugin"
-        ]
+        ],
+        "Version": "0.2.0"
     }
 }
