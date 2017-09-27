@@ -12,6 +12,7 @@
             }
         ],
         "Description": "Preview the document in the target format",
+        "Description[ca@valencia]": "Vista prèvia del document en el format de destí",
         "Description[ca]": "Vista prèvia del document en el format de destí",
         "Description[de]": "Vorschau des Dokuments im Zielformat",
         "Description[nl]": "Het document bekijken in het doelformaat",
@@ -27,6 +28,7 @@
         "Icon": "document-preview",
         "Id": "ktexteditorpreview",
         "Name": "Document Preview",
+        "Name[ca@valencia]": "Vista prèvia del document",
         "Name[ca]": "Vista prèvia del document",
         "Name[de]": "Dokumentvorschau",
         "Name[nl]": "Voorbeeld van document",
