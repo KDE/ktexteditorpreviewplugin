@@ -4,7 +4,7 @@
 
 This repository contains the KTextEditor Document Preview Plugin, a plugin for the editor [Kate](https://www.kate-editor.org/), the IDE [KDevelop](https://www.kdevelop.org/), or other software using the [KTextEditor](https://api.kde.org/frameworks/ktexteditor/html/index.html) framework.
 
-The plugin enables a live preview of the currently edited text document in the final format. For the display it uses the [KParts](https://api.kde.org/frameworks/kparts/html/index.html) plugin which is currently selected as the preferred one for the MIME type of the document. If there is no matching KParts plugin, no preview is possible.
+The plugin enables a live preview of the currently edited text document in the final format, in the sidebar (Kate) or as tool view (KDevelop). So when editing e.g. a Markdown text or an SVG image, the result is instantly visible next to the source text. For the display the plugin uses that [KParts](https://api.kde.org/frameworks/kparts/html/index.html) plugin which is currently selected as the preferred one for the MIME type of the document. If there is no KParts plugin for that type, no preview is possible.
 
 
 ## Build and install the plugin
@@ -24,7 +24,7 @@ Build and install:
 
 ## Use the plugin
 
-Start Kate or KDevelop on the commandline, with adapted QT_PLUGIN_PATH (make sure to not use a session open in another running app instance):
+Start Kate or KDevelop on the commandline, with adapted `QT_PLUGIN_PATH` (make sure to not use a session open in another running app instance):
 
     # check the used plugin installation path as it depends on the system
     # and replace "_REPLACE_LIB_" with e.g. "lib", "lib64" or "lib/x86_64-linux-gnu"
