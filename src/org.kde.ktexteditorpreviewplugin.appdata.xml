@@ -8,6 +8,7 @@
   <name xml:lang="ca-valencia">Connector de vista prèvia de documents del KTextEditor</name>
   <name xml:lang="es">Complemento de vista previa de documentos de KTextEditor</name>
   <name xml:lang="nl">Plug-in voor voorbeeld van KTextEditor document</name>
+  <name xml:lang="pl">Wtyczka KTextEditor do poglądu dokumentu</name>
   <name xml:lang="pt">'Plugin' de Antevisão de Documentos do KTextEditor</name>
   <name xml:lang="sk">Plugin náhľadu dokumentu KTextEditor</name>
   <name xml:lang="sr">Прикључак за преглед докумената за KTextEditor</name>
@@ -22,6 +23,7 @@
   <summary xml:lang="ca-valencia">Vista prèvia en viu de documents de text editats en el format de destí.</summary>
   <summary xml:lang="es">Vista previa en vivo de documentos de texto editados en el formato deseado</summary>
   <summary xml:lang="nl">Live voorbeeld van bewerkte tekstdocumenten in het doelformaat</summary>
+  <summary xml:lang="pl">Podgląd na żywo edytowanych dokumentów tekstowych w formacie docelowym</summary>
   <summary xml:lang="pt">Antevisão em directo dos documentos de texto editados no formato-alvo</summary>
   <summary xml:lang="sr">Живи преглед уређиваних текстуалних докумената у циљном формату</summary>
   <summary xml:lang="sr-Latn">Živi pregled uređivanih tekstualnih dokumenata u ciljnom formatu</summary>
@@ -36,6 +38,7 @@
     <p xml:lang="ca-valencia">Este connector pel programari basat en el KTextEditor (com l'editor Kate o l'IDE KDevelop) habilita una vista prèvia en viu del document de text editat actualment en el format de destí.</p>
     <p xml:lang="es">Este complemento para software basado en KTextEditor (como el editor Kate o el entorno de desarrollo integrado KDevelop) permite vista previa en vivo de documentos de texto que están siendo editados en el formato deseado.</p>
     <p xml:lang="nl">Deze plug-in voor op KTextEditor gebaseerde software (zoals de editor Kate of de IDE KDevelop) schakelt een live voorbeeld in van het nu bewerkte tekstdocument in het doelformaat.</p>
+    <p xml:lang="pl">Wtyczka ta dla oprogramowania opartego na KTextEditor (takiego jak edytor Kate lub IDE KDevelop) umożliwia podgląd na żywo obecnie edytowanego dokumentu tekstowego w formacie docelowym.</p>
     <p xml:lang="pt">Este 'plugin' para as aplicações baseadas no KTextEditor (como o editor Kate ou o IDE KDevelop) permite uma antevisão em directo do documento de texto editado de momento no formato-alvo.</p>
     <p xml:lang="sr">Овај прикључак за софтвер на основу KTextEditor‑а (попут уређивача Кејт или ИДЕ‑а К‑девелоп) омогућава живи преглед тренутно уређиваног текстуалног документа у циљном формату.</p>
     <p xml:lang="sr-Latn">Ovaj priključak za softver na osnovu KTextEditor‑a (poput uređivača Kate ili IDE‑a KDevelop) omogućava živi pregled trenutno uređivanog tekstualnog dokumenta u ciljnom formatu.</p>
@@ -49,6 +52,7 @@
     <p xml:lang="ca-valencia">Per a la visualització s'usa el connector KParts que actualment se selecciona com el preferit segons el tipus MIME del document.</p>
     <p xml:lang="es">Para la visualización usa el complemento de KParts que esté configurado como el preferido para el tipo MIME del documento.</p>
     <p xml:lang="nl">Voor het tonen gebruikt het de KParts-plug-in die nu is geselecteerd als de geprefereerde voor het MIME-type van het document.</p>
+    <p xml:lang="pl">Do wyświetlania używana jest wtyczka KParts, która jest obecnie wybrana jako domyślna dla typu MIME tego dokumentu.</p>
     <p xml:lang="pt">Para a visualização, ele usa o 'plugin' do KParts que está seleccionado de momento como o preferido para o tipo MIME do documento.</p>
     <p xml:lang="sr">За приказ користи К‑деони прикључак који је тренутно изабран као пожељан за дати МИМЕ тип документа.</p>
     <p xml:lang="sr-Latn">Za prikaz koristi K‑deoni priključak koji je trenutno izabran kao poželjan za dati MIME tip dokumenta.</p>
